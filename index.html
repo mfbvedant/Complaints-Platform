@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nature-Themed Complaint System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gold: #c5a880;
+            --dark-forest: #0a1412;
+            --off-white: #f3f3f3;
+            --glass-bg: rgba(10, 20, 18, 0.6);
+        }
+        body {
+            background-color: var(--dark-forest);
+            font-family: 'Lato', sans-serif;
+            color: var(--off-white);
+            overflow-x: hidden;
+            background-image: url('https://images.unsplash.com/photo-1448375240586-882707db888b?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center center;
+            background-attachment: fixed;
+        }
+        .accent-text {
+            color: var(--primary-gold);
+            text-shadow: 0 0 10px rgba(197, 168, 128, 0.5);
+        }
+        .main-title {
+            font-family: 'Playfair Display', serif;
+            color: #fff;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
+        }
+        .glass-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px) saturate(120%);
+            -webkit-backdrop-filter: blur(12px) saturate(120%);
+            border: 1px solid rgba(197, 168, 128, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            transition: all 0.3s ease-in-out;
+        }
+        .themed-button {
+            border: 1px solid var(--primary-gold);
+            color: var(--primary-gold);
+            background: transparent;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 5px var(--primary-gold), inset 0 0 5px rgba(197, 168, 128, 0.3);
+        }
+        .themed-button:hover:not(:disabled) {
+            color: var(--dark-forest);
+            background: var(--primary-gold);
+            box-shadow: 0 0 20px var(--primary-gold);
+            transform: translateY(-2px);
+        }
+        .themed-button:disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+        .form-input, .form-select {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(197, 168, 128, 0.5);
+            color: #fff;
+            transition: all 0.3s ease;
+        }
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            box-shadow: 0 0 15px rgba(197, 168, 128, 0.7);
+            border-color: var(--primary-gold);
+        }
+        .form-select option {
+            background: var(--dark-forest);
+            color: #fff;
+        }
+        .status-pending { border-left: 4px solid #facc15; }
+        .status-in-progress { border-left: 4px solid #38bdf8; }
+        .status-resolved { border-left: 4px solid #34d399; }
+
+        /* Animation */
+        .fade-in {
+            animation: fadeInAnimation 1.2s ease-in-out forwards;
+        }
+        @keyframes fadeInAnimation {
+            from { opacity: 0; transform: translateY(25px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--dark-forest);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-gold);
+            border-radius: 5px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #e6c599;
+        }
+
+    </style>
+</head>
+<body class="min-h-screen p-4">
+    <div id="app" class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <header class="relative text-center py-8 fade-in">
+            <div id="adminLoginContainer" class="absolute top-8 right-4">
+                <button id="adminLoginBtn" class="themed-button py-2 px-5 rounded-lg text-sm font-bold transition hover:scale-105">Admin Login</button>
+            </div>
+            <h1 class="text-5xl md:text-7xl font-bold main-title">Complaint Portal</h1>
+            <p class="mt-4 text-lg text-gray-200 accent-text">Your Voice Matters. We're Listening.</p>
+        </header>
+
+        <!-- Main Content -->
+        <main id="mainContent" class="fade-in" style="animation-delay: 0.2s;">
+            <!-- User View -->
+            <div id="userView">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Complaint Submission Form -->
+                    <div id="complaintFormContainer" class="glass-container p-6 md:p-8 rounded-2xl">
+                        <h2 class="text-3xl font-bold mb-6 text-white main-title">Lodge a New Complaint</h2>
+                        <form id="complaintForm" class="space-y-4">
+                            <input type="text" id="name" placeholder="Your Full Name" class="w-full p-3 rounded-lg form-input" required>
+                            <input type="tel" id="mobile" placeholder="Your Mobile Number" class="w-full p-3 rounded-lg form-input" required pattern="[0-9]{10}">
+                            <select id="occupation" class="w-full p-3 rounded-lg form-select" required>
+                                <option value="" disabled selected>Select Your Occupation</option>
+                                <option value="Student">Student</option>
+                                <option value="Citizen">Citizen</option>
+                                <option value="Teaching Staff">Teaching Staff</option>
+                                <option value="Non-Teaching Staff">Non-Teaching Staff</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <select id="complaintType" class="w-full p-3 rounded-lg form-select" required>
+                                <option value="" disabled selected>Select Complaint Type</option>
+                                <option value="Infrastructure">Infrastructure</option>
+                                <option value="Sanitation">Sanitation</option>
+                                <option value="Administrative">Administrative</option>
+                                <option value="Harassment">Harassment</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <textarea id="complaintText" rows="4" placeholder="Describe your complaint in detail..." class="w-full p-3 rounded-lg form-input" required></textarea>
+                            <button type="submit" class="w-full p-3 font-bold rounded-lg themed-button">
+                                <span id="submit-text">Submit Complaint</span>
+                                <span id="submit-spinner" class="hidden">Submitting...</span>
+                            </button>
+                            <p id="submitError" class="text-red-400 text-center pt-2 hidden"></p>
+                        </form>
+                    </div>
+
+                    <!-- Complaint Tracker -->
+                    <div id="trackerContainer" class="glass-container p-6 md:p-8 rounded-2xl">
+                        <h2 class="text-3xl font-bold mb-6 text-white main-title">Track Your Complaint</h2>
+                        <form id="trackForm" class="space-y-4">
+                            <input type="text" id="tokenInput" placeholder="Enter Your Complaint Token" class="w-full p-3 rounded-lg form-input" required>
+                            <button type="submit" class="w-full p-3 font-bold rounded-lg themed-button">Track Status</button>
+                        </form>
+                        <div id="trackingResult" class="mt-6 hidden">
+                            <!-- Status will be displayed here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Login View -->
+            <div id="adminLoginView" class="hidden">
+                <div class="max-w-md mx-auto glass-container p-8 rounded-2xl fade-in">
+                    <h2 class="text-3xl font-bold mb-6 text-center text-white main-title">Admin Login</h2>
+                    <form id="adminLoginForm" class="space-y-4">
+                        <input type="password" id="adminPassword" placeholder="Enter Admin Password" class="w-full p-3 rounded-lg form-input" required>
+                        <button type="submit" class="w-full p-3 font-bold rounded-lg themed-button">Login</button>
+                        <p id="adminError" class="text-red-400 text-center hidden">Invalid Password.</p>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Admin Panel View -->
+            <div id="adminPanelView" class="hidden">
+                 <div class="glass-container p-6 md:p-8 rounded-2xl fade-in">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-3xl font-bold text-white main-title">Admin Dashboard</h2>
+                        <button id="logoutBtn" class="p-2 px-4 font-bold rounded-lg themed-button text-sm">Logout</button>
+                    </div>
+                    <div id="complaintList" class="space-y-4 max-h-[60vh] overflow-y-auto pr-2">
+                        <!-- Complaints will be loaded here -->
+                        <p class="text-center text-gray-400">Loading complaints...</p>
+                    </div>
+                 </div>
+            </div>
+        </main>
+        
+        <!-- Thank You View -->
+        <div id="thankYouView" class="fixed inset-0 bg-dark-forest bg-opacity-95 flex items-center justify-center hidden z-50 p-4">
+            <div class="glass-container p-8 rounded-2xl text-center max-w-lg w-full fade-in">
+                <h3 class="text-4xl font-bold main-title mb-4">Thank You!</h3>
+                <p class="text-gray-300 mb-4 text-lg">Your complaint has been successfully registered.</p>
+                <p class="text-gray-300 mb-2">Please save your token to track the status:</p>
+                <div class="bg-gray-900 border border-dashed border-yellow-400 p-4 rounded-lg flex items-center justify-between">
+                    <span id="tokenDisplayThankYou" class="font-mono text-xl text-green-400 break-all"></span>
+                    <button id="copyTokenBtnThankYou" class="ml-4 p-2 rounded-lg themed-button text-sm">Copy</button>
+                </div>
+                <p id="copy-success-thank-you" class="text-green-400 mt-2 hidden">Copied!</p>
+                <button id="goBackBtn" class="mt-8 w-full p-3 font-bold rounded-lg themed-button">Lodge Another Complaint</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, query, where, getDocs, onSnapshot, doc, updateDoc, serverTimestamp, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // --- CONFIG & INITIALIZATION ---
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : { apiKey: "YOUR_API_KEY", authDomain: "YOUR_AUTH_DOMAIN", projectId: "YOUR_PROJECT_ID" };
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-complaint-app';
+        
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        setLogLevel('debug');
+
+        const complaintsCollectionPath = `/artifacts/${appId}/public/data/complaints`;
+        const complaintsCol = collection(db, complaintsCollectionPath);
+        
+        // --- AUTHENTICATION ---
+        async function authenticateUser() {
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+                console.log("User authenticated:", auth.currentUser?.uid);
+            } catch (error) {
+                console.error("Authentication Error: ", error);
+            }
+        }
+        authenticateUser();
+
+        // --- DOM ELEMENTS ---
+        const userView = document.getElementById('userView');
+        const adminLoginView = document.getElementById('adminLoginView');
+        const adminPanelView = document.getElementById('adminPanelView');
+        const adminLoginBtn = document.getElementById('adminLoginBtn');
+        const adminLoginContainer = document.getElementById('adminLoginContainer');
+        const mainContent = document.getElementById('mainContent');
+        const thankYouView = document.getElementById('thankYouView');
+
+        // --- UI TOGGLING ---
+        const showView = (view) => {
+            userView.classList.add('hidden');
+            adminLoginView.classList.add('hidden');
+            adminPanelView.classList.add('hidden');
+            view.classList.remove('hidden');
+            adminLoginContainer.style.display = (view === userView) ? 'block' : 'none';
+        };
+
+        adminLoginBtn.addEventListener('click', () => showView(adminLoginView));
+        
+        // --- ADMIN LOGIC ---
+        const adminLoginForm = document.getElementById('adminLoginForm');
+        const adminPasswordInput = document.getElementById('adminPassword');
+        const adminError = document.getElementById('adminError');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const complaintList = document.getElementById('complaintList');
+        const ADMIN_PASS = "admin123";
+
+        adminLoginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (adminPasswordInput.value === ADMIN_PASS) {
+                adminError.classList.add('hidden');
+                adminPasswordInput.value = '';
+                showView(adminPanelView);
+                loadAdminComplaints();
+            } else {
+                adminError.classList.remove('hidden');
+            }
+        });
+
+        logoutBtn.addEventListener('click', () => {
+            showView(userView);
+            complaintList.innerHTML = `<p class="text-center text-gray-400">Loading complaints...</p>`;
+            if (unsubscribe) unsubscribe();
+        });
+
+        let unsubscribe;
+        function loadAdminComplaints() {
+             unsubscribe = onSnapshot(complaintsCol, (snapshot) => {
+                if (snapshot.empty) {
+                    complaintList.innerHTML = `<p class="text-center text-gray-400">No complaints found.</p>`;
+                    return;
+                }
+                
+                const complaints = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                // Sort by timestamp, newest first
+                complaints.sort((a, b) => (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0));
+
+
+                complaintList.innerHTML = complaints.map(c => `
+                    <div class="bg-gray-900 bg-opacity-50 p-4 rounded-lg status-${c.status.toLowerCase().replace(' ', '-')}">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="font-bold text-white">${c.name} <span class="text-sm font-normal text-gray-400">(${c.occupation})</span></p>
+                                <p class="text-sm text-gray-300">${c.mobile || ''}</p>
+                                <p class="text-sm text-yellow-300 font-mono mt-1">${c.token}</p>
+                            </div>
+                            <span class="text-xs text-gray-400">${c.timestamp ? new Date(c.timestamp.seconds * 1000).toLocaleString() : 'N/A'}</span>
+                        </div>
+                        <div class="mt-2">
+                            <p class="font-semibold text-yellow-400">${c.complaintType}</p>
+                            <p class="text-gray-300 mt-1">${c.complaintText}</p>
+                        </div>
+                        <div class="mt-4 flex items-center gap-4">
+                            <select data-id="${c.id}" class="admin-status-select w-full p-2 rounded-lg form-select text-sm">
+                                <option value="Pending" ${c.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                                <option value="In Progress" ${c.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
+                                <option value="Resolved" ${c.status === 'Resolved' ? 'selected' : ''}>Resolved</option>
+                            </select>
+                        </div>
+                    </div>
+                `).join('');
+            });
+        }
+        
+        complaintList.addEventListener('change', async (e) => {
+            if(e.target.classList.contains('admin-status-select')){
+                const docId = e.target.dataset.id;
+                const newStatus = e.target.value;
+                const docRef = doc(db, complaintsCollectionPath, docId);
+                try {
+                    await updateDoc(docRef, { status: newStatus });
+                    console.log(`Status updated for ${docId}`);
+                } catch(err) {
+                    console.error("Error updating status: ", err);
+                }
+            }
+        });
+
+
+        // --- USER COMPLAINT SUBMISSION ---
+        const complaintForm = document.getElementById('complaintForm');
+        const submitError = document.getElementById('submitError');
+
+        complaintForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const submitButton = e.target.querySelector('button[type="submit"]');
+            const submitText = document.getElementById('submit-text');
+            const submitSpinner = document.getElementById('submit-spinner');
+            
+            submitButton.disabled = true;
+            submitText.classList.add('hidden');
+            submitSpinner.classList.remove('hidden');
+            submitError.classList.add('hidden');
+
+            const token = `TKN-${Date.now().toString().slice(-6)}-${Math.random().toString(36).substr(2, 4).toUpperCase()}`;
+            
+            const complaintData = {
+                name: document.getElementById('name').value.trim(),
+                mobile: document.getElementById('mobile').value.trim(),
+                occupation: document.getElementById('occupation').value,
+                complaintType: document.getElementById('complaintType').value,
+                complaintText: document.getElementById('complaintText').value.trim(),
+                token: token,
+                status: 'Pending',
+                timestamp: serverTimestamp()
+            };
+
+            try {
+                await addDoc(complaintsCol, complaintData);
+                const tokenDisplayThankYou = document.getElementById('tokenDisplayThankYou');
+                tokenDisplayThankYou.textContent = token;
+                
+                mainContent.classList.add('hidden');
+                thankYouView.classList.remove('hidden');
+                
+                complaintForm.reset();
+            } catch (error) {
+                console.error("Error adding document: ", error);
+                submitError.textContent = "Failed to submit complaint. Please try again.";
+                submitError.classList.remove('hidden');
+            } finally {
+                submitButton.disabled = false;
+                submitText.classList.remove('hidden');
+                submitSpinner.classList.add('hidden');
+            }
+        });
+
+        // --- THANK YOU VIEW LOGIC ---
+        document.getElementById('goBackBtn').addEventListener('click', () => {
+            thankYouView.classList.add('hidden');
+            mainContent.classList.remove('hidden');
+        });
+        
+        document.getElementById('copyTokenBtnThankYou').addEventListener('click', () => {
+            const tokenDisplayThankYou = document.getElementById('tokenDisplayThankYou');
+            const copySuccess = document.getElementById('copy-success-thank-you');
+            // Using document.execCommand as a fallback for iframe environments
+            const textArea = document.createElement("textarea");
+            textArea.value = tokenDisplayThankYou.textContent;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                copySuccess.classList.remove('hidden');
+                setTimeout(() => copySuccess.classList.add('hidden'), 2000);
+            } catch (err) {
+                console.error('Failed to copy text: ', err);
+            }
+            document.body.removeChild(textArea);
+        });
+
+        // --- COMPLAINT TRACKING LOGIC ---
+        const trackForm = document.getElementById('trackForm');
+        const tokenInput = document.getElementById('tokenInput');
+        const trackingResult = document.getElementById('trackingResult');
+
+        trackForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const trackButton = e.target.querySelector('button[type="submit"]');
+            const tokenToTrack = tokenInput.value.trim();
+            if (!tokenToTrack) return;
+
+            trackButton.disabled = true;
+            trackingResult.innerHTML = `<p class="text-yellow-300">Searching...</p>`;
+            trackingResult.classList.remove('hidden');
+
+            const q = query(complaintsCol, where("token", "==", tokenToTrack));
+            
+            try {
+                const querySnapshot = await getDocs(q);
+                if (querySnapshot.empty) {
+                    trackingResult.innerHTML = `<p class="text-red-400">No complaint found with this token.</p>`;
+                } else {
+                    const complaint = querySnapshot.docs[0].data();
+                    const statusClass = complaint.status.toLowerCase().replace(' ', '-');
+                    trackingResult.innerHTML = `
+                        <div class="bg-gray-900 bg-opacity-50 p-4 rounded-lg status-${statusClass}">
+                            <p class="font-bold">Status: <span class="text-white">${complaint.status}</span></p>
+                            <p class="text-sm text-gray-400 mt-1">Token: ${complaint.token}</p>
+                            <p class="text-sm text-gray-400">Type: ${complaint.complaintType}</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error("Error tracking complaint:", error);
+                trackingResult.innerHTML = `<p class="text-red-400">Error fetching status. Please try again.</p>`;
+            } finally {
+                trackButton.disabled = false;
+            }
+        });
+
+    </script>
+</body>
+</html>
+
