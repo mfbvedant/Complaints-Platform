@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Complaint System with Firebase</title>
+    <title>College Complaint Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -43,7 +43,7 @@
             backdrop-filter: blur(12px) saturate(120%);
             -webkit-backdrop-filter: blur(12px) saturate(120%);
             border: 1px solid rgba(197, 168, 128, 0.2);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 极速快30, 0.37);
             transition: all 0.3s ease-in-out;
         }
         .themed-button {
@@ -51,7 +51,7 @@
             color: var(--primary-gold);
             background: transparent;
             transition: all 0.3s ease;
-            box-shadow: 0 0 5px var(--primary-gold), inset 0 极速快3 5px rgba(197, 168, 128, 0.3);
+            box-shadow: 0 0 5px var(--primary-gold), inset 0 0 5px rgba(197, 168, 128, 0.3);
         }
         .themed-button:hover:not(:disabled) {
             color: var(--dark-forest);
@@ -98,386 +98,566 @@
             border-radius: 50%;
             transition: background-color 0.5s ease;
         }
-        #connection-status.online { background-color: #34d399; box-shadow: 0 0 8px #极速快34d399; }
+        #connection-status.online { background-color: #34d399; box-shadow: 0 0 8px #34极速快3d399; }
         #connection-status.offline { background-color: #f87171; box-shadow: 0 0 8px #f87171; }
 
-        /* Firebase Status */
-        #firebaseStatus {
-            transition: all 0.3s ease;
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
         }
-        .status-connected {
-            background-color: rgba(52, 211, 153, 0.2);
-            border: 1px solid #34d399;
+        ::-webkit极速快3-scrollbar-track {
+            background: var(--dark-forest);
         }
-        .status-disconnected {
-            background-color: rgba(248, 113, 113, 0.2);
-            border: 1px solid #f87171;
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-gold);
+            border-radius: 5px;
         }
-        
-        /* Troubleshooter Styles */
-        .troubleshooter-step {
-            display: none;
-        }
-        .troubleshooter-step.active {
-            display: block;
-        }
-        .copy-btn {
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .copy-btn:hover {
-            transform: scale(1.05);
+        ::-webkit-scrollbar-thumb:hover {
+            background: #e6c599;
         }
         
-        /* View Management */
-        .view {
+        /* Student-specific fields */
+        .student-fields {
             display: none;
-        }
-        .view.active {
-            display: block;
+            transition: all 0.3s ease;
         }
     </style>
 </head>
 <body class="min-h-screen p-4">
     <div id="app" class="max-w-7xl mx-auto">
         <!-- Firebase Status Indicator -->
-        <div id="firebaseStatus" class="fixed top-4 right-4 glass-container p-3 rounded-lg flex items-center gap-2 z-50 status-disconnected">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L极速快310 8.586 8.707 7.293z" clip-rule="evenodd" />
+        <div id="firebaseStatus" class="fixed top-4 right-4 glass-container p-3 rounded-lg flex items-center gap-2 z-50 status-connected">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
             </svg>
-            <span class="text-sm">Firebase: Disconnected</span>
+            <span class="text-sm">Firebase: Connected</span>
         </div>
 
-        <!-- Troubleshooter View -->
-        <div id="troubleshooterView" class="view active">
-            <header class="relative text-center py-8 fade-in">
-                <h1 class="text-5xl md:text-7xl font-bold main-title">Firebase Connection Troubleshooter</h1>
-                <p class="mt-4 text-lg text-gray-200 accent-text">Let's fix your Firebase connection issues</p>
-            </header>
-
-            <div class="glass-container p-6 md:p-8 rounded-2xl mb-8">
-                <h2 class="text-3xl font-bold mb-6 text-white main-title">Connection Status</h2>
-                <div id="connectionStatus" class="flex items-center mb-6 p-4 bg-red-900 bg-opacity-50 rounded-lg">
-                    <span class="status-indicator status-offline"></span>
-                    <span class="font-medium">Not connected to Firebase</span>
-                </div>
-                
-                <div class="mb-6">
-                    <h3 class="text-xl font-semibold mb-3 text-white">Your Firebase Configuration</h3>
-                    <div class="bg-gray-900 p-4 rounded-lg mb-4">
-                        <pre id="configDisplay" class="overflow-x-auto text-green-400"></pre>
-                    </div>
-                    <button id="testConfigBtn" class="themed-button py-2 px-4 rounded-lg">Test This Configuration</button>
-                </div>
+        <!-- Header -->
+        <header class="relative text-center py-8 fade-in">
+            <div id="adminLoginContainer" class="absolute top-8 right-4">
+                <button id="adminLoginBtn" class="themed-button py-2 px-5 rounded-lg text-sm font-bold transition hover:scale-105">Admin Login</button>
             </div>
+            <h1 class="text-5xl md:text-7xl font-bold main-title">College Complaint Portal</h1>
+            <p class="mt-4 text-lg text-gray-200 accent-text">Your Voice Matters. We're Listening.</p>
+        </header>
 
-            <div class="glass-container p-6 md:p-8 rounded-2xl">
-                <h2 class="text-3xl font-bold mb-6 text-white main-title">Troubleshooting Steps</h2>
-                
-                <div class="mb-6">
-                    <h3 class="text-lg font-semibold mb-2 flex items-center text-white">
-                        <span class="step-number bg-yellow-500 flex items-center justify-center w-8 h-8 rounded-full mr-3">1</span> Check Firestore Security Rules
-                    </h3>
-                    <p class="mb-3 text-gray-300">The most common issue is with Firestore security rules. You need to allow read/write access.</p>
-                    <div class="bg-gray-900 p-4 rounded-lg mb-3">
-                        <p class="text-white text-sm mb-2">Go to Firebase Console → Firestore Database → Rules tab and paste these rules:</p>
-                        <div class="bg-gray-800 p-3 rounded relative">
-                            <pre class="text-green-400 overflow-x-auto" id="rulesCode">rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write: if true;
-    }
-  }
-}</pre>
-                            <button class="copy-btn absolute top-2 right-2 themed-button p-1 text-xs" onclick="copyToClipboard('rulesCode')">Copy</button>
-                        </div>
-                    </div>
-                    <p class="text-yellow-300 bg-yellow-900 bg-opacity-30 p-3 rounded-lg">
-                        <strong>Note:</strong> These rules allow anyone to read and write to your database. For production, implement proper authentication.
-                    </p>
-                </div>
-                
-                <div class="mb-6">
-                    <h3 class="text-lg font-semibold mb-2 flex items-center text-white">
-                        <span class="step-number bg-yellow-500 flex items-center justify-center w-8 h-8 rounded-full mr-3">2</span> Enable Firestore Database
-                    </h3>
-                    <p class="mb-3 text-gray-300">Make sure you've created and enabled Firestore in your Firebase project:</p>
-                    <ol class="list-decimal pl-6 mb-3 text-gray-300">
-                        <li class="mb-2">Go to the <a href="https://console.firebase.google.com/" target="_blank" class="text-yellow-400 hover:underline">Firebase Console</a></li>
-                        <li class="mb-2">Select your project</li>
-                        <li class="mb-2">Click on "Firestore Database" in the left sidebar</li>
-                        <li class="mb-2">Click "Create Database" if you haven't already</li>
-                        <li>Choose a location and start in test mode</li>
-                    </ol>
-                </div>
-                
-                <div class="mb-6">
-                    <h3 class="text-lg font-semibold mb-2 flex items-center text-white">
-                        <span class="step-number bg-yellow-500 flex items-center justify-center w-8 h-8 rounded-full mr-3">3</span> Test Connection Again
-                    </h3>
-                    <p class="mb-3 text-gray-300">After completing the steps above, test your connection again:</p>
-                    <button id="finalTestBtn" class="themed-button py-2 px-4 rounded-lg mb-4">Test Connection Again</button>
-                    <div id="testResults" class="hidden p-4 bg-blue-900 bg-opacity-30 rounded-lg">
-                        <h4 class="font-semibold mb-2 text-white">Test Results:</h4>
-                        <pre id="testResultText" class="overflow-x-auto text-green-400"></pre>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="glass-container p-6 md:p-8 rounded-2xl text-center mt-8">
-                <h2 class="text-3xl font-bold mb-6 text-white main-title">Next Steps</h2>
-                <p class="mb-4 text-gray-300">Once your Firebase connection is working, you can proceed to use the complaint system.</p>
-                <button id="goToComplaintSystem" class="themed-button py-3 px-6 rounded-lg text-lg" disabled>Go to Complaint System</button>
-            </div>
-        </div>
-
-        <!-- Complaint System View -->
-        <div id="complaintSystemView" class="view">
-            <!-- Header -->
-            <header class="relative text-center py-8 fade-in">
-                <div id="adminLoginContainer" class="absolute top-8 right-4">
-                    <button id="adminLoginBtn" class="themed-button py-2 px-5 rounded-lg text-sm font-bold transition hover:scale-105">Admin Login</button>
-                </div>
-                <h1 class="text-5xl md:text-7xl font-bold main-title">Complaint Portal</h1>
-                <p class="mt-4 text-lg text-gray-200 accent-text">Your Voice Matters. We're Listening.</p>
-            </header>
-
-            <!-- Main Content -->
-            <main id="mainContent" class="fade-in" style="animation-delay: 0.2s;">
-                <!-- User View -->
-                <div id="userView">
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        <!-- Complaint Submission Form -->
-                        <div id="complaintFormContainer" class="glass-container p-6 md:p-8 rounded-2xl">
-                            <h2 class="text-3xl font-bold mb-6 text-white main-title">Lodge a New Complaint</h2>
-                            <form id="complaintForm" class="space-y-4">
-                                <input type="text" id="name" placeholder="Your Full Name" class="w-full p-3 rounded-lg form-input" required>
-                                <input type="tel" id="mobile" placeholder="Your Mobile Number" class="w-full p-3 rounded-lg form-input" required pattern="[0-9]{10}">
-                                <select id="occupation" class="w-full p-3 rounded-lg form-select" required>
-                                    <option value="" disabled selected>Select Your Occupation</option>
-                                    <option value="Student">Student</option>
-                                    <option value="Citizen">Citizen</option>
-                                    <option value="Teaching Staff">Teaching Staff</option>
-                                    <option value="Non-Teaching Staff">Non-Teaching Staff</option>
-                                    <option value="Other">Other</option>
+        <!-- Main Content -->
+        <main id="mainContent" class="fade-in" style="animation-delay: 0.2s;">
+            <!-- User View -->
+            <div id="userView">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Complaint Submission Form -->
+                    <div id="complaintFormContainer" class="glass-container p-6 md:p-8 rounded-2xl">
+                        <h2 class="text-3xl font-bold mb-6 text-white main-title">Lodge a New Complaint</h2>
+                        <form id="complaintForm" class="space-y-4">
+                            <input type="text" id="name" placeholder="Your Full Name" class="w-full p-3 rounded-lg form-input" required>
+                            <input type="tel" id="mobile" placeholder="Your Mobile Number" class="w-full p-3 rounded-lg form-input" required pattern="[0-9]{10}">
+                            <select id="occupation" class="w-full p-3 rounded-lg form-select" required>
+                                <option value="" disabled selected>Select Your Occupation</option>
+                                <option value="Student">Student</option>
+                                <option value="Citizen">Citizen</option>
+                                <option value="Teaching Staff">Teaching Staff</option>
+                                <option value="Non-Teaching Staff">Non-Teaching Staff</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            
+                            <!-- Student-specific fields (initially hidden) -->
+                            <div id="studentFields" class="student-fields space-y-4">
+                                <select id="division" class="w-full p-3 rounded-lg form-select">
+                                    <option value="" disabled selected>Select Division</option>
+                                    <option value="FE">First Year (FE)</option>
+                                    <option value="Computer">Computer Department</option>
+                                    <option value="IT">IT Department</option>
+                                    <option value="Mechanical">Mechanical Department</option>
+                                    <option value="Electrical">Electrical Department</option>
+                                    <option value="Civil">Civil Department</option>
                                 </select>
-                                <select id="complaintType" class="w-full p-3 rounded-lg form-select极速快3" required>
-                                    <option value="" disabled selected>Select Complaint Type</option>
-                                    <option value="Infrastructure">Infrastructure</option>
-                                    <option value="Sanitation极速快3">Sanitation</option>
-                                    <option value="Administrative">Administrative</option>
-                                    <option value="Harassment">Harassment</option>
-                                    <option value="Other">Other</option>
+                                <select id="branch" class="w-full p-3 rounded-lg form-select">
+                                    <option value="" disabled selected>Select Branch</option>
+                                    <option value="Computer Engineering">Computer Engineering</option>
+                                    <option value="IT Engineering">IT Engineering</option>
+                                    <option value="Mechanical Engineering">Mechanical Engineering</option>
+                                    <option value="Electrical Engineering">Electrical Engineering</option>
+                                    <option value="Civil Engineering">Civil Engineering</option>
+                                    <option value="AIDS">Artificial Intelligence & Data Science</option>
+                                    <option value="AIML">Artificial Intelligence & Machine Learning</option>
                                 </select>
-                                <textarea id="complaintText" rows="4" placeholder="Describe your complaint in detail..." class="w-full p-3 rounded-lg form-input" required></textarea>
-                                <button type="submit" class="w-full p-3 font-bold rounded-lg themed-button">
-                                    <span id="submit-text">Submit Complaint</span>
-                                    <span id="submit-spinner" class="hidden">Submitting...</span>
-                                </button>
-                                <p id="submitError" class="text-red-400 text-center pt-2 hidden"></p>
-                            </form>
-                        </div>
-
-                        <!-- Complaint Tracker -->
-                        <div id="trackerContainer" class="glass-container p-6 md:p-8 rounded-2xl">
-                            <h2 class="text-3xl font-bold mb-6 text-white main-title">Track Your Complaint</h2>
-                            <form id="trackForm" class="space-y-4">
-                                <input type="text" id="tokenInput" placeholder="Enter Your Complaint Token" class="w-full p-3 rounded-lg form-input" required>
-                                <button type="submit极速快3" class="w-full p-3 font-bold rounded-lg themed-button">Track Status</button>
-                            </form>
-                            <div id="trackingResult" class="mt-6 hidden">
-                                <!-- Status will be displayed here -->
+                                <input type="text" id="rollNo" placeholder="Roll Number" class="w-full p-3 rounded-lg form-input">
                             </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Admin Login View -->
-                <div id="adminLoginView" class="hidden">
-                    <div class="max-w-md mx-auto glass-container p-8 rounded-2xl fade-in">
-                        <h2 class="text-3xl font-bold mb-6 text-center text-white main-title">Admin Login</h2>
-                        <form id="adminLoginForm" class="space-y-4">
-                            <input type="password" id="adminPassword" placeholder="Enter Admin Password" class="w-full p-3 rounded-lg form-input" required>
-                            <button type="submit" class="w-full p-3 font-bold rounded-lg themed-button">Login</button>
-                            <p id="adminError" class="text-red-400 text-center hidden">Invalid Password.</p>
+                            
+                            <select id="complaintType" class="w-full p-3 rounded-lg form-select" required>
+                                <option value="" disabled selected>Select Complaint Type</option>
+                                <option value="Infrastructure">Infrastructure</option>
+                                <option value="Sanitation">Sanitation</option>
+                                <option value="Administrative">Administrative</option>
+                                <option value="Academic">Academic</option>
+                                <option value="Library">Library Related</option>
+                                <option value="Canteen">Canteen</option>
+                                <option value="Hostel">Hostel</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <textarea id="complaintText" rows="4" placeholder="Describe your complaint in detail..." class="w-full p-3 rounded-lg form-input" required></textarea>
+                            <button type="submit" class="w-full p-3 font-bold rounded-lg themed-button">
+                                <span id="submit-text">Submit Complaint</span>
+                                <span id="submit-spinner" class="hidden">Submitting...</span>
+                            </button>
+                            <p id="submitError" class="text-red-400 text-center pt-2 hidden"></p>
                         </form>
                     </div>
-                </div>
 
-                <!-- Admin Panel View -->
-                <div id="adminPanelView" class="hidden">
-                    <div class="glass-container p-6 md:p-8 rounded-2xl fade-in">
-                        <div class="flex justify-between items-center mb-6">
-                            <div class="flex items-center gap-4">
-                                <h2 class="text-3极速快3xl font-bold text-white main-title">Admin Dashboard</h2>
-                                <button id="refreshBtn" class="themed-button p-2 rounded-full text-sm" title="Refresh Complaints">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
-                                        <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
-                                        <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
-                                    </svg>
-                                </button>
-                            </div>
-                            <div class="flex items-center gap-3">
-                                <span id="connection-status" title="Connection Status"></span>
-                                <button id="logoutBtn" class="p-2 px-4 font-bold rounded-lg themed-button text-sm">Logout</button>
-                            </div>
-                        </div>
-                        <div id="complaintList" class="space-y-4 max-h-[60vh] overflow-y-auto pr-2">
-                            <!-- Complaints will be loaded here -->
-                            <p class="text-center text-gray-400">Loading complaints...</p>
+                    <!-- Complaint Tracker -->
+                    <div id="trackerContainer" class="glass-container p-6 md:p-8 rounded-2xl">
+                        <h2 class="text-3xl font-bold mb-6 text-white main-title">Track Your Complaint</h2>
+                        <form id="trackForm" class="space-y-4">
+                            <input type="text" id="tokenInput" placeholder="Enter Your Complaint Token" class="w-full p-3 rounded-lg form-input" required>
+                            <button type="submit" class="w-full p-3 font-bold rounded-lg themed-button">Track Status</button>
+                        </form>
+                        <div id="trackingResult" class="mt-6 hidden">
+                            <!-- Status will be displayed here -->
                         </div>
                     </div>
                 </div>
-            </main>
-            
-            <!-- Thank You View -->
-            <div id="thankYouView" class="fixed inset-0 bg-dark-forest bg-opacity-95 flex items-center justify-center hidden z-50 p-4">
-                <div class="glass-container p-8 rounded-2xl text-center max-w-lg w-full fade-in">
-                    <h3 class="text-4xl font-bold main-title mb-4">Thank You!</h3>
-                    <p class="text-gray-300 mb-4 text-lg">Your complaint has been successfully registered.</p>
-                    <p极速快3 class="text-gray-300 mb-2">Please save your token to track the status:</p>
-                    <div class="bg-gray-900 border border-dashed border-yellow-400 p-4 rounded-lg flex items-center justify-between">
-                        <span id="tokenDisplayThankYou" class="font-mono text-xl text-green-400 break-all"></span>
-                        <button id="copyTokenBtnThankYou" class="ml-4 p-2 rounded-lg themed-button text-sm">Copy</button>
-                    </div>
-                    <p id="copy-success-thank-you" class="text-green-400 mt-2 hidden">Copied!</p>
-                    <button id="goBackBtn" class="mt-8 w-full p-3 font-bold rounded-lg themed-button">Lodge Another Complaint</button>
+            </div>
+
+            <!-- Admin Login View -->
+            <div id="adminLoginView" class="hidden">
+                <div class="max-w-md mx-auto glass-container p-8 rounded-2xl fade-in">
+                    <h2 class="text-3xl font-bold mb-6 text-center text-white main-title">Admin Login</h2>
+                    <form id极速快3="adminLoginForm" class="space-y-4">
+                        <input type="password" id="adminPassword" placeholder="Enter Admin Password" class="w-full p-3 rounded-lg form-input" required>
+                        <button type="submit" class="w-full p-3 font-bold rounded-lg themed-button">Login</button>
+                        <p id="adminError" class="text-red-400 text-center hidden">Invalid Password.</p>
+                    </form>
                 </div>
+            </div>
+
+            <!-- Admin Panel View -->
+            <div id="adminPanelView" class="hidden">
+                 <div class="glass-container p-6 md:p-8 rounded-2xl fade-in">
+                    <div class="flex justify-between items-center mb-6">
+                        <div class="flex items-center gap-4">
+                            <h2 class="text-3xl font-bold text-white main-title">Admin Dashboard</h2>
+                            <button id="refreshBtn" class="themed-button p-2 rounded-full text-sm" title="Refresh Complaints">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16极速快3" height="16" fill="current极速快3Color" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 极速快32v1z"/>
+                                    <path d="M8 4.466V.534a.25.25 0 0 1 .极速快341-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="flex items-center gap-3">
+                             <span id="connection-status" class="online" title="Connected to Cloud"></span>
+                            <button id="logoutBtn" class="p-2 px-4 font-bold rounded-lg themed-button text-sm">Logout</button>
+                        </div>
+                    </div>
+                    <div id="complaintList" class="space-y-4 max-h-[60vh] overflow-y-auto pr-2">
+                        <!-- Complaints will be loaded here -->
+                        <p class="text-center text-gray-400">Loading complaints...</p>
+                    </div>
+                 </div>
+            </div>
+        </main>
+        
+        <!-- Thank You View -->
+        <div id="thankYouView" class="fixed inset-0 bg-dark-forest bg-opacity-95 flex items-center justify-center hidden z-50 p-4">
+            <div class="glass-container p-8 rounded-2xl text-center max-w-lg w-full fade-in">
+                <h3 class="text-4xl font-bold main-title mb-4">Thank You!</h3>
+                <p class="text-gray-300 mb-4 text-lg">Your complaint has been successfully registered.</p>
+                <p class="text-gray-300 mb-2">Please save your token to track the status:</p>
+                <div class="bg-gray-900 border border-dashed border-yellow-400 p-4 rounded-lg flex items-center justify-between">
+                    <span id="tokenDisplayThankYou" class="font-mono text-xl text-green-400 break-all"></span>
+                    <button id="copyTokenBtnThankYou" class="ml-4 p-2 rounded-lg themed-button text-sm">Copy</button>
+                </div>
+                <p id="copy-success-thank-you" class="text-green-400 mt-2 hidden">Copied!</p>
+                <button id="goBackBtn" class="mt-8 w-full p-3 font-bold rounded-lg themed-button">Lodge Another Complaint</button>
             </div>
         </div>
     </div>
 
     <script>
-        // Your Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyCHkGv6JWjgNq_V0Bs-AGtaGMwTAOvjCU0",
-            authDomain: "complain-c7bfb.firebaseapp.com",
-            projectId: "complain-c7bfb",
-            storageBucket: "complain-c7bfb.firebasestorage.app",
-            messagingSenderId: "269132567387",
-            appId: "1:269132567387:web:c76748a713e8d79658c07e",
-            measurementId: "G-6863CC7ZT5"
-        };
-        
-        // Firebase variables
-        let db;
-        let complaintsCollection;
-        const ADMIN_PASS = "admin123"; // Change this in production
-        
-        // DOM Elements
-        const troubleshooterView = document.getElementById('troubleshooterView');
-        const complaintSystemView = document.getElementById('complaintSystemView');
-        const firebaseStatus = document.getElementById('firebaseStatus');
-        const connectionStatus = document.getElementById('connectionStatus');
-        const goToComplaintSystemBtn = document.getElementById('goToComplaintSystem');
-        
-        // Display the configuration
-        document.getElementById('configDisplay').textContent = JSON.stringify(firebaseConfig, null, 2);
-        
-        // Test Firebase connection
-        function testFirebaseConnection() {
-            const statusElement = document.getElementById('connectionStatus');
-            const testResultText = document.getElementById('testResultText');
-            const testResults = document.getElementById('testResults');
+        // Main application
+        function main() {
+            // Firebase configuration
+            const firebaseConfig = {
+                apiKey: "AIzaSyCHkGv6JWjgNq_V0Bs-AGtaGMwTAOvjCU0",
+                authDomain: "complain-c7bfb.firebaseapp.com",
+                projectId: "complain-c7bfb",
+                storageBucket: "complain-c7bfb.firebasestorage.app",
+                messagingSenderId: "269132567387",
+                appId: "1:269132567387:web:c76748a713e8d79658c07e",
+                measurementId: "G-6863CC7ZT5"
+            };
             
-            statusElement.innerHTML = '<span class="status-indicator status-offline"></span><span class="font-medium">Testing connection...</span>';
-            testResults.classList.add('hidden');
+            // Firebase variables
+            let db;
+            let complaintsCollection;
+            const ADMIN_PASS = "admin123"; // Change this in production
             
-            try {
-                // Initialize Firebase
-                firebase.initializeApp(firebaseConfig);
-                
-                // Initialize Firestore
-                db = firebase.firestore();
-                complaintsCollection = db.collection('complaints');
-                const testCollection = db.collection('test_connection');
-                
-                // Try to write a test document
-                testCollection.add({
-                    test: true,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                })
-                .then(() => {
-                    // Success - clean up the test document
-                    testCollection.limit(1).get()
-                        .then(snapshot => {
-                            snapshot.forEach(doc => {
-                                testCollection.doc(doc.id).delete();
-                            });
-                            
-                            statusElement.innerHTML = '<span class="status-indicator status-online"></span><span class="font-medium">Successfully connected to Firebase!</span>';
-                            statusElement.className = 'flex items-center mb-6 p-4 bg-green-900 bg-opacity-50 rounded-lg';
-                            testResultText.textContent = '✓ Firebase connection successful!\n✓ Firestore write operation successful!\n✓ Firestore read operation successful!\n✓ Firestore delete operation successful!';
-                            testResults.classList.remove('hidden');
-                            goToComplaintSystemBtn.disabled = false;
-                            
-                            // Update Firebase status indicator
-                            firebaseStatus.innerHTML = `
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                                </svg>
-                                <span class="text-sm">Firebase: Connected</span>
-                            `;
-                            firebaseStatus.classList.remove('status-disconnected');
-                            firebaseStatus.classList.add('status-connected');
-                        });
-                })
-                .catch(error => {
-                    statusElement.innerHTML = '<span class="status-indicator status-offline"></span><span class="font-medium">Failed to connect to Firebase</span>';
-                    statusElement.className = 'flex items-center mb-6 p-4 bg-red-900 bg-opacity-50 rounded-lg';
-                    testResultText.textContent = `Error: ${error.message}\n\nThis is typically caused by:\n1. Incorrect security rules\n2. Firestore not being enabled\n3. Project configuration issues`;
-                    testResults.classList.remove('hidden');
+            // DOM Elements
+            const userView = document.getElementById('userView');
+            const adminLoginView = document.getElementById('adminLoginView');
+            const adminPanelView = document.getElementById('adminPanelView');
+            const adminLoginBtn = document.getElementById('adminLoginBtn');
+            const adminLoginContainer = document.getElementById('adminLoginContainer');
+            const mainContent = document.getElementById('mainContent');
+            const thankYouView = document.getElementById('thankYouView');
+            const connectionStatus = document.getElementById('connection-status');
+            const firebaseStatus = document.getElementById('firebaseStatus');
+            const occupationSelect = document.getElementById('occupation');
+            const studentFields = document.getElementById('studentFields');
+
+            // Initialize Firebase
+            function initializeFirebase() {
+                try {
+                    // Initialize Firebase
+                    firebase.initializeApp(firebaseConfig);
+                    console.log("Firebase initialized successfully");
                     
-                    // Update Firebase status indicator
-                    document.getElementById('firebaseErrorDetail').textContent = error.message;
-                });
-            } catch (error) {
-                statusElement.innerHTML = '<span class="status-indicator status-offline"></span><span class="font-medium">Failed to initialize Firebase</span>';
-                statusElement.className = 'flex items-center mb-6 p-4 bg-red-900 bg-opacity-50 rounded-lg';
-                testResultText.textContent = `Initialization Error: ${error.message}\n\nThis might be caused by:\n1. Invalid Firebase configuration\n2. Network issues\n3. Firebase SDK loading problems`;
-                testResults.classList.remove('hidden');
+                    // Initialize Firestore
+                    db = firebase.firestore();
+                    complaintsCollection = db.collection('complaints');
+                    
+                    return true;
+                } catch (error) {
+                    console.error("Error initializing Firebase:", error);
+                    firebaseStatus.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="text-sm">Firebase: Error - ${error.message}</span>
+                    `;
+                    return false;
+                }
             }
-        }
-        
-        // Copy to clipboard function
-        function copyToClipboard(elementId) {
-            const element = document.getElementById(elementId);
-            const text = element.textContent;
-            
-            navigator.clipboard.writeText(text).then(() => {
-                alert('Copied to clipboard!');
-            }).catch(err => {
-                console.error('Failed to copy: ', err);
+
+            // Show/hide student fields based on occupation
+            occupationSelect.addEventListener('change', function() {
+                if (this.value === 'Student') {
+                    studentFields.style.display = 'block';
+                    // Make student fields required
+                    document.getElementById('division').required = true;
+                    document.getElementById('branch').required = true;
+                    document.getElementById('rollNo').required = true;
+                } else {
+                    studentFields.style.display = 'none';
+                    // Remove required attribute from student fields
+                    document.getElementById('division').required = false;
+                    document.getElementById('branch').required = false;
+                    document.getElementById('rollNo').required = false;
+                }
             });
-        }
-        
-        // Switch to complaint system
-        function goToComplaintSystem() {
-            troubleshooterView.classList.remove('active');
-            complaintSystemView.classList.add('active');
-            initializeComplaintSystem();
-        }
-        
-        // Initialize the complaint system
-        function initializeComplaintSystem() {
-            // This would initialize your complaint system functionality
-            console.log("Complaint system initialized");
-        }
-        
-        // Event listeners
-        document.getElementById('testConfigBtn').addEventListener('click', testFirebaseConnection);
-        document.getElementById('finalTestBtn').addEventListener('click', testFirebaseConnection);
-        goToComplaintSystemBtn.addEventListener('click', goToComplaintSystem);
-        
-        // Initial test on load
-        window.addEventListener('load', () => {
-            // Show the configuration
-            document.getElementById('configDisplay').textContent = JSON.stringify(firebaseConfig, null, 2);
+
+            // Connection Status
+            const updateOnlineStatus = () => {
+                if (navigator.onLine) {
+                    connectionStatus.classList.remove('offline');
+                    connectionStatus.classList.add('online');
+                    connectionStatus.title = "Connected to Cloud";
+                } else {
+                    connectionStatus.classList.remove('online');
+                    connectionStatus.classList.add('offline');
+                    connectionStatus.title = "Offline - Data will sync when online";
+                }
+            };
+            window.addEventListener('online', updateOnlineStatus);
+            window.addEventListener('offline', updateOnlineStatus);
+            updateOnlineStatus();
+
+            // UI Toggling
+            const showView = (view) => {
+                userView.classList.add('hidden');
+                adminLoginView.classList.add('hidden');
+                adminPanelView.classList.add('hidden');
+                view.classList.remove('hidden');
+                adminLoginContainer.style.display = (view === userView) ? 'block' : 'none';
+            };
+
+            adminLoginBtn.addEventListener('click', () => showView(adminLoginView));
             
-            // Run initial test after a short delay
-            setTimeout(testFirebaseConnection, 1000);
-        });
+            // Admin Login
+            const adminLoginForm = document.getElementById('adminLoginForm');
+            const adminPasswordInput = document.getElementById('adminPassword');
+            const adminError = document.getElementById('adminError');
+
+            adminLoginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                if (adminPasswordInput.value === ADMIN_PASS) {
+                    adminError.classList.add('hidden');
+                    adminPasswordInput.value = '';
+                    showView(adminPanelView);
+                    loadAdminComplaints();
+                } else {
+                    adminError.classList.remove('hidden');
+                }
+            });
+
+            // Logout
+            const logoutBtn = document.getElementById('logoutBtn');
+            logoutBtn.addEventListener('click', () => {
+                showView(userView);
+                document.getElementById('complaintList').innerHTML = '<p class="text-center text-gray-400">Loading complaints...</p>';
+            });
+
+            // Refresh Complaints
+            const refreshBtn = document.getElementById('refreshBtn');
+            refreshBtn.addEventListener('click', () => {
+                document.getElementById('complaintList').innerHTML = '<p class极速快3="text-center text-gray-400">Refreshing data...</p>';
+                loadAdminComplaints();
+            });
+
+            // Load Complaints for Admin
+            function loadAdminComplaints() {
+                if (!complaintsCollection) {
+                    document.getElementById('complaintList').innerHTML = '<p class="text-center text-red-400">Firebase not configured properly.</p>';
+                    return;
+                }
+                
+                complaintsCollection.orderBy('timestamp', 'desc').get()
+                .then((querySnapshot) => {
+                    if (querySnapshot.empty) {
+                        document.getElementById('complaintList').innerHTML = '<p class="text-center text-gray-400">No complaints found.</p>';
+                        return;
+                    }
+                    
+                    const complaints = [];
+                    querySnapshot.forEach((doc) => {
+                        complaints.push({ id: doc.id, ...doc.data() });
+                    });
+                    
+                    renderComplaints(complaints);
+                })
+                .catch((error) => {
+                    console.error('Failed to load complaints:', error);
+                    document.getElementById('complaintList').innerHTML = `
+                        <p class="text-center text-red-400">Failed to load complaints. Please try again.</p>
+                    `;
+                });
+            }
+
+            function renderComplaints(complaints) {
+                const complaintList = document.getElementById('complaintList');
+                
+                if (!complaints || complaints.length === 0) {
+                    complaintList.innerHTML = '<p class="text-center极速快3 text-gray-400">No complaints found.</p>';
+                    return;
+                }
+                
+                complaintList.innerHTML = complaints.map(c => `
+                    <div class="admin-complaint-card bg-gray-900 bg-opacity-50 p-4 rounded-lg status-${c.status.toLowerCase().replace(' ', '-')}">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-sm text-gray-400">Name (${c.occupation})</p>
+                                <input type="text" value="${c.name}" class="admin-editable admin-name w-full p-1 rounded-md text-white font-bold bg-transparent border-gray-600">
+                                
+                                <p class="text-sm text-gray-400 mt-2">Mobile</p>
+                                <input type="text" value="${c.mobile || ''}" class="admin-editable admin-mobile w-full p-1 rounded-md text-white bg-transparent border-gray-600">
+                                
+                                ${c.occupation === 'Student' ? `
+                                <p class="text-sm text-gray-400 mt-2">Division: ${c.division || 'N/A'}</p>
+                                <p class="text-sm text-gray-400">Branch: ${c.branch || 'N/A'}</p>
+                                <p class="text-sm text-gray-400">Roll No: ${c.rollNo || 'N/A'}</p>
+                                ` : ''}
+                                
+                                <p class="text-sm text-yellow-300 font-mono mt-2">${c.token}</p>
+                            </div>
+                            <span class="text-xs text-gray-400">${c.timestamp ? new Date(c.timestamp.seconds * 1000).toLocaleString() : 'N/A'}</span>
+                        </div>
+                        <div class="mt-2">
+                            <p class="font-semibold text-yellow-400">${c.complaintType}</p>
+                            <textarea class="admin-editable admin-complaint-text w-full p-1 rounded-md text-gray-300 mt-1 bg-transparent border-gray-600" rows="3">${c.complaintText}</textarea>
+                        </div>
+                        <div class="mt-4 flex items-center gap-4">
+                            <select data-id="${c.id}" class="admin-status-select w-full p-2 rounded-lg form-select text-sm">
+                                <option value="Pending" ${c.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                                <option value="In Progress" ${c.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
+                                <option value="Resolved" ${c.status === 'Resolved' ? 'selected' : ''}>Resolved</option>
+                            </select>
+                            <button data-id="${c.id}" class="admin-update-btn themed-button p-2 px-4 rounded-lg text-sm">Save</button>
+                        </div>
+                        <p class="update-success-msg text-green-400 text-xs mt-2 text-right hidden">Updated!</p>
+                    </div>
+                `).join('');
+            }
+
+            // Update Complaint
+            document.getElementById('complaintList').addEventListener('click', async (e) => {
+                if (e.target.classList.contains('admin-update-btn')) {
+                    const button = e.target;
+                    const complaintId = button.dataset.id;
+                    const card = button.closest('.admin-complaint-card');
+                    
+                    const updatedData = {
+                        name: card.querySelector('.admin-name').value.trim(),
+                        mobile: card.querySelector('.admin-mobile').value.trim(),
+                        complaintText: card.querySelector('.admin-complaint-text').value.trim(),
+                        status: card.querySelector('.admin-status-select').value
+                    };
+
+                    try {
+                        button.textContent = 'Saving...';
+                        button.disabled = true;
+                        
+                        await complaintsCollection.doc(complaintId).update(updatedData);
+                        
+                        const successMsg = card.querySelector('.update-success-msg');
+                        successMsg.classList.remove('hidden');
+                        setTimeout(() => successMsg.classList.add('hidden'), 2500);
+
+                    } catch (err) {
+                        console.error("Error updating complaint: ", err);
+                        alert('Failed to update complaint. Please try again.');
+                    } finally {
+                        button.textContent = 'Save';
+                        button.disabled = false;
+                    }
+                }
+            });
+
+            // Submit Complaint
+            const complaintForm = document.getElementById('complaintForm');
+            const submitError = document.getElementById('submitError');
+
+            complaintForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const submitButton = e.target.querySelector('button[type="submit"]');
+                const submitText = document.getElementById('submit-text');
+                const submitSpinner = document.getElementById('submit-spinner');
+                
+                submitButton.disabled = true;
+                submitText.classList.add('hidden');
+                submitSpinner.classList.remove('hidden');
+                submitError.classList.add('hidden');
+
+                const token = `TKN-${Date.now().toString().slice(-6)}-${Math.random().toString(36).substr(2, 4).toUpperCase()}`;
+                
+                // Prepare complaint data
+                const complaintData = {
+                    name: document.getElementById('name').value.trim(),
+                    mobile: document.getElementById('mobile').value.trim(),
+                    occupation: document.getElementById('occupation').value,
+                    complaintType: document.getElementById('complaintType').value,
+                    complaintText: document.getElementById('complaintText').value.trim(),
+                    token: token,
+                    status: 'Pending',
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                };
+
+                // Add student-specific data if occupation is Student
+                if (complaintData.occupation === 'Student') {
+                    complaintData.division = document.getElementById('division').value;
+                    complaintData.branch = document.getElementById('branch').value;
+                    complaintData.rollNo = document.getElementById('rollNo').value.trim();
+                }
+
+                try {
+                    await complaintsCollection.add(complaintData);
+                    const tokenDisplayThankYou = document.getElementById('tokenDisplayThankYou');
+                    tokenDisplayThankYou.textContent = token;
+                    
+                    mainContent.classList.add('hidden');
+                    thankYouView.classList.remove('hidden');
+                    
+                    complaintForm.reset();
+                    // Hide student fields after form reset
+                    studentFields.style.display = 'none';
+                } catch (error) {
+                    console.error("Error adding complaint: ", error);
+                    submitError.textContent = "Failed to submit complaint. Please try again.";
+                    submitError.classList.remove('hidden');
+                } finally {
+                    submitButton.disabled = false;
+                    submitText.classList.remove('hidden');
+                    submitSpinner.classList.add('hidden');
+                }
+            });
+
+            // Track Complaint
+            const trackForm = document.getElementById('trackForm');
+            const tokenInput = document.getElementById('tokenInput');
+            const trackingResult = document.getElementById('trackingResult');
+
+            trackForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const trackButton = e.target.querySelector('button[type="submit"]');
+                const tokenToTrack = tokenInput.value.trim();
+                if (!token极速快3ToTrack) return;
+
+                trackButton.disabled = true;
+                trackingResult.innerHTML = `<p class="text-yellow-300">Searching...</p>`;
+                trackingResult.classList.remove('hidden');
+
+                try {
+                    const querySnapshot = await complaintsCollection.where('token', '==', tokenToTrack).get();
+                    
+                    if (querySnapshot.empty) {
+                        trackingResult.innerHTML = `<p class="text-red-400">No complaint found with this token.</p>`;
+                    } else {
+                        const complaint = querySnapshot.docs[0].data();
+                        const statusClass = complaint.status.toLowerCase().replace(' ', '-');
+                        
+                        let studentInfo = '';
+                        if (complaint.occupation === 'Student') {
+                            studentInfo = `
+                                <p class="text-sm text-gray-400">Division: ${complaint.division || 'N/A'}</p>
+                                <p class="text-sm text-gray-400">Branch: ${complaint.branch || 'N/A'}</p>
+                                <p class="text-sm text-gray-400">Roll No: ${complaint.rollNo || 'N/A'}</p>
+                            `;
+                        }
+                        
+                        trackingResult.innerHTML = `
+                            <div class="bg-gray-900 bg-opacity-50 p-4 rounded-lg status-${statusClass}">
+                                <p class="font-bold">Status: <span class="text-white">${complaint.status}</span></p>
+                                <p class="text-sm text-gray-400 mt-1">Token: ${complaint.token}</p>
+                                <p class="text-sm text-gray-400">Type: ${complaint.complaintType}</p>
+                                ${studentInfo}
+                                <p class="text-sm text-gray-400 mt-2">Submitted: ${complaint.timestamp ? new Date(complaint.timestamp.seconds * 1000).toLocaleDateString() : 'N/A'}</p>
+                            </div>
+                        `;
+                    }
+                } catch (error) {
+                    console.error("Error tracking complaint:", error);
+                    trackingResult.innerHTML = `<p class="text-red-400">Error fetching status. Please try again.</p>`;
+                } finally {
+                    trackButton.disabled = false;
+                }
+            });
+
+            // Thank You View
+            document.getElementById('goBackBtn').addEventListener('click', () => {
+                thankYouView.classList.add('hidden');
+                mainContent.classList.remove('hidden');
+            });
+            
+            document.getElementById('copyTokenBtnThankYou').addEventListener('click', () => {
+                const tokenDisplayThankYou = document.getElementById('tokenDisplayThankYou');
+                const copySuccess = document.getElementById('copy-success-thank-you');
+                const textArea = document.createElement("textarea");
+                textArea.value = tokenDisplayThankYou.textContent;
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    copySuccess.classList.remove('hidden');
+                    setTimeout(() => copySuccess.classList.add('hidden'), 2000);
+                } catch (err) {
+                    console.error('Failed to copy text: ', err);
+                }
+                document.body.removeChild(textArea);
+            });
+
+            // Initialize the application
+            function initApp() {
+                if (initializeFirebase()) {
+                    console.log("Application initialized successfully with Firebase");
+                }
+            }
+
+            // Start the app
+            initApp();
+        }
+
+        // Start the application
+        main();
     </script>
 </body>
 </html>
