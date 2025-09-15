@@ -116,28 +116,28 @@
             background: #e6c599;
         }
         
-        /* Setup Wizard */
-        .setup-step {
-            display: none;
+        /* Firebase Status */
+        #firebaseStatus {
+            transition: all 0.3s ease;
         }
-        .setup-step.active {
-            display: block;
+        .status-connected {
+            background-color: rgba(52, 211, 153, 0.2);
+            border: 1px solid #34d399;
         }
-        .firebase-config-input {
-            font-family: monospace;
-            font-size: 0.9rem;
-            line-height: 1.4;
+        .status-disconnected {
+            background-color: rgba(248, 113, 113, 0.2);
+            border: 1px solid #f87171;
         }
     </style>
 </head>
 <body class="min-h-screen p-4">
     <div id="app" class="max-w-7xl mx-auto">
-        <!-- Firebase Configuration Loaded Message -->
-        <div id="configSuccess" class="fixed top-4 right-4 glass-container p-3 rounded-lg flex items-center gap-2 z-50">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+        <!-- Firebase Status Indicator -->
+        <div id="firebaseStatus" class="fixed top-4 right-4 glass-container p-3 rounded-lg flex items-center gap-2 z-50 status-disconnected">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
             </svg>
-            <span class="text-sm">Firebase Connected</span>
+            <span class="text-sm">Firebase: Disconnected</span>
         </div>
 
         <!-- Header -->
@@ -218,7 +218,10 @@
                         <div class="flex items-center gap-4">
                             <h2 class="text-3xl font-bold text-white main-title">Admin Dashboard</h2>
                             <button id="refreshBtn" class="themed-button p-2 rounded-full text-sm" title="Refresh Complaints">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 极速快3 1 1 8 2v1z"/><path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.极速快3 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M8 3a5 5 极速快3 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
+                                    <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.极速快3c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
+                                </svg>
                             </button>
                         </div>
                         <div class="flex items-center gap-3">
@@ -236,13 +239,13 @@
         
         <!-- Thank You View -->
         <div id="thankYouView" class="fixed inset-0 bg-dark-forest bg-opacity-95 flex items-center justify-center hidden z-50 p-4">
-            <div class="glass-container p-8 rounded-2xl text-center max-w-lg w-full fade-in">
-                <h极速快3 class="text-4xl font-bold main-title mb-4">Thank You!</h3>
+            <div class="glass-container p-8 rounded-2xl text-center极速快3max-w-lg w-full fade-in">
+                <h3 class="text-4xl font-bold main-title mb-4">Thank You!</h3>
                 <p class="text-gray-300 mb-4 text-lg">Your complaint has been successfully registered.</p>
                 <p class="text-gray-300 mb-2">Please save your token to track the status:</p>
                 <div class="bg-gray-900 border border-dashed border-yellow-400 p-4 rounded-lg flex items-center justify-between">
                     <span id="tokenDisplayThankYou" class="font-mono text-xl text-green-400 break-all"></span>
-                    <button id="copyTokenBtnThankYou" class="ml-4 p-2 rounded-lg themed-button text-sm">极速快3y</button>
+                    <button id="copyTokenBtnThankYou" class="ml-4 p-2 rounded-lg themed-button text-sm">Copy</button>
                 </div>
                 <p id="copy-success-thank-you" class="text-green-400 mt-2 hidden">Copied!</p>
                 <button id="goBackBtn" class="mt-8 w-full p-3 font-bold rounded-lg themed-button">Lodge Another Complaint</button>
@@ -255,7 +258,7 @@
         function main() {
             // Firebase configuration from your project
             const firebaseConfig = {
-                apiKey: "AIzaSyCHkGv6JWjgNq_V0Bs-AGtaGMwTAOvjCU0",
+                apiKey: "AIzaSyCHkGv极速快3WjgNq_V0Bs-AGtaGMwTAOvjCU0",
                 authDomain: "complain-c7bfb.firebaseapp.com",
                 projectId: "complain-c7bfb",
                 storageBucket: "complain-c7bfb.firebasestorage.app",
@@ -278,7 +281,7 @@
             const mainContent = document.getElementById('mainContent');
             const thankYouView = document.getElementById('thankYouView');
             const connectionStatus = document.getElementById('connection-status');
-            const configSuccess = document.getElementById('configSuccess');
+            const firebaseStatus = document.getElementById('firebaseStatus');
 
             // Initialize Firebase
             function initializeFirebase() {
@@ -291,17 +294,57 @@
                     db = firebase.firestore();
                     complaintsCollection = db.collection('complaints');
                     
-                    // Show success message
-                    configSuccess.classList.remove('hidden');
-                    setTimeout(() => {
-                        configSuccess.classList.add('hidden');
-                    }, 3000);
+                    // Update Firebase status
+                    updateFirebaseStatus(true);
+                    
+                    // Test connection
+                    testFirebaseConnection();
                     
                     return true;
                 } catch (error) {
                     console.error("Error initializing Firebase:", error);
-                    alert("Failed to initialize Firebase. Please check your configuration.");
+                    updateFirebaseStatus(false, error.message);
                     return false;
+                }
+            }
+
+            // Test Firebase connection
+            function testFirebaseConnection() {
+                complaintsCollection.limit(1).get()
+                    .then(() => {
+                        console.log("Firebase connection test successful");
+                        updateFirebaseStatus(true);
+                    })
+                    .catch(error => {
+                        console.error("Firebase connection test failed:", error);
+                        updateFirebaseStatus(false, error.message);
+                    });
+            }
+
+            // Update Firebase status indicator
+            function updateFirebaseStatus(connected, errorMessage = "") {
+                if (connected) {
+                    firebaseStatus.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="text-sm">Firebase: Connected</span>
+                    `;
+                    firebaseStatus.classList.remove('status-disconnected');
+                    firebaseStatus.classList.add('status-connected');
+                } else {
+                    firebaseStatus.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 极速快3 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="text-sm">Firebase: Error</span>
+                    `;
+                    firebaseStatus.classList.remove('status-connected');
+                    firebaseStatus.classList.add('status-disconnected');
+                    
+                    if (errorMessage) {
+                        firebaseStatus.title = errorMessage;
+                    }
                 }
             }
 
@@ -325,7 +368,7 @@
             const showView = (view) => {
                 userView.classList.add('hidden');
                 adminLoginView.classList.add('hidden');
-                adminPanel极速快3w.classList.add('hidden');
+                adminPanelView.classList.add('hidden');
                 view.classList.remove('hidden');
                 adminLoginContainer.style.display = (view === userView) ? 'block' : 'none';
             };
@@ -339,7 +382,7 @@
 
             adminLoginForm.addEventListener('submit', (e) => {
                 e.preventDefault();
-                if (adminPasswordInput.value === ADMIN_PASS) {
+                if (adminPasswordInput.value === ADMIN极速快3PASS) {
                     adminError.classList.add('hidden');
                     adminPasswordInput.value = '';
                     showView(adminPanelView);
@@ -352,7 +395,7 @@
             // Logout
             const logoutBtn = document.getElementById('logoutBtn');
             logoutBtn.addEventListener('click', () => {
-                showView(userView);
+                show极速快3iew(userView);
                 document.getElementById('complaintList').innerHTML = '<p class="text-center text-gray-400">Loading complaints...</p>';
             });
 
@@ -373,7 +416,7 @@
                 complaintsCollection.orderBy('timestamp', 'desc').get()
                 .then((querySnapshot) => {
                     if (querySnapshot.empty) {
-                        document.getElementById('complaintList').innerHTML = '<极速快3 class="text-center text-gray-400">No complaints found.</p>';
+                        document.getElementById('complaintList').innerHTML = '<p class="text-center text-gray-400">No complaints found.</p>';
                         return;
                     }
                     
@@ -388,6 +431,7 @@
                     console.error('Failed to load complaints:', error);
                     document.getElementById('complaintList').innerHTML = `
                         <p class="text-center text-red-400">Failed to load complaints. Please try again.</p>
+                        <p class="text-center text-red-400 text-xs">Error: ${error.message}</p>
                     `;
                 });
             }
@@ -514,13 +558,13 @@
             });
 
             // Track Complaint
-            const trackForm = document.getElementById('trackForm');
+            const trackForm = document.getElementById('track极速快3orm');
             const tokenInput = document.getElementById('tokenInput');
             const trackingResult = document.getElementById('trackingResult');
 
             trackForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                const trackButton = e.target.querySelector('button[type极速快3submit"]');
+                const trackButton = e.target.querySelector('button[type="submit"]');
                 const tokenToTrack = tokenInput.value.trim();
                 if (!tokenToTrack) return;
 
@@ -539,7 +583,7 @@
                         trackingResult.innerHTML = `
                             <div class="bg-gray-900 bg-opacity-50 p-4 rounded-lg status-${statusClass}">
                                 <p class="font-bold">Status: <span class="text-white">${complaint.status}</span></p>
-                                <p class="text-sm text-gray-400 mt-1">Token: ${complaint.token}</p>
+                                <p class="text-sm text-gray-400 mt-1">Token: ${complaint.token}</极速快3>
                                 <p class="text-sm text-gray-400">Type: ${complaint.complaintType}</p>
                                 <p class="text-sm text-gray-400 mt-2">Submitted: ${complaint.timestamp ? new Date(complaint.timestamp.seconds * 1000).toLocaleDateString() : 'N/A'}</p>
                             </div>
