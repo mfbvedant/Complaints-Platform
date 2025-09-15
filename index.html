@@ -3,132 +3,186 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Firebase Connection Troubleshooter</title>
+    <title>Complaint System with Firebase</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
     <!-- Firebase App (the core Firebase SDK) -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <!-- Firebase Firestore -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <style>
         :root {
-            --primary-color: #4361ee;
-            --secondary-color: #3a0ca3;
-            --accent-color: #f72585;
-            --light-color: #f8f9fa;
-            --dark-color: #212529;
+            --primary-gold: #c5a880;
+            --dark-forest: #0a1412;
+            --off-white: #f3f3f3;
+            --glass-bg: rgba(10, 20, 18, 0.6);
         }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-            color: var(--dark-color);
+            background-color: var(--dark-forest);
+            font-family: 'Lato', sans-serif;
+            color: var(--off-white);
+            overflow-x: hidden;
+            background-image: url('https://images.unsplash.com/photo-1448375240586-882707db888b?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center center;
+            background-attachment: fixed;
+        }
+        .accent-text {
+            color: var(--primary-gold);
+            text-shadow: 0 0 10px rgba(197, 168, 128, 0.5);
+        }
+        .main-title {
+            font-family: 'Playfair Display', serif;
+            color: #fff;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
         }
         .glass-container {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(10px);
-            border-radius: 12px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            padding: 25px;
-            margin-bottom: 20px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px) saturate(120%);
+            -webkit-backdrop-filter: blur(12px) saturate(120%);
+            border: 1px solid rgba(197, 168, 128, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            transition: all 0.3s ease-in-out;
         }
-        .btn-primary {
-            background: var(--primary-color);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-weight: 600;
+        .themed-button {
+            border: 1px solid var(--primary-gold);
+            color: var(--primary-gold);
+            background: transparent;
             transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
+            box-shadow: 0 0 5px var(--primary-gold), inset 0 极速快3 5px rgba(197, 168, 128, 0.3);
         }
-        .btn-primary:hover {
-            background: var(--secondary-color);
+        .themed-button:hover:not(:disabled) {
+            color: var(--dark-forest);
+            background: var(--primary-gold);
+            box-shadow: 0 0 20px var(--primary-gold);
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
-        .status-indicator {
-            display: inline-block;
+        .themed-button:disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+        .form-input, .form-select, .admin-editable {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(197, 168, 128, 0.5);
+            color: #fff;
+            transition: all 0.3s ease;
+        }
+        .form-input:focus, .form-select:focus, .admin-editable:focus {
+            outline: none;
+            box-shadow: 0 0 15px rgba(197, 168, 128, 0.7);
+            border-color: var(--primary-gold);
+        }
+        .form-select option {
+            background: var(--dark-forest);
+            color: #fff;
+        }
+        .status-pending { border-left: 4px solid #facc15; }
+        .status-in-progress { border-left: 4px solid #38bdf8; }
+        .status-resolved { border-left: 4px solid #34d399; }
+
+        /* Animation */
+        .fade-in {
+            animation: fadeInAnimation 1.2s ease-in-out forwards;
+        }
+        @keyframes fadeInAnimation {
+            from { opacity: 0; transform: translateY(25px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Connection Status */
+        #connection-status {
             width: 12px;
             height: 12px;
             border-radius: 50%;
-            margin-right: 8px;
+            transition: background-color 0.5s ease;
         }
-        .status-online {
-            background-color: #28a745;
+        #connection-status.online { background-color: #34d399; box-shadow: 0 0 8px #极速快34d399; }
+        #connection-status.offline { background-color: #f87171; box-shadow: 0 0 8px #f87171; }
+
+        /* Firebase Status */
+        #firebaseStatus {
+            transition: all 0.3s ease;
         }
-        .status-offline {
-            background-color: #dc3545;
+        .status-connected {
+            background-color: rgba(52, 211, 153, 0.2);
+            border: 1px solid #34d399;
         }
-        .step-number {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 30px;
-            height: 30px;
-            background: var(--primary-color);
-            color: white;
-            border-radius: 50%;
-            margin-right: 10px;
-            font-weight: bold;
+        .status-disconnected {
+            background-color: rgba(248, 113, 113, 0.2);
+            border: 1px solid #f87171;
         }
-        code {
-            background: #f8f9fa;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: 'Courier New', monospace;
-            font-size: 0.9em;
+        
+        /* Troubleshooter Styles */
+        .troubleshooter-step {
+            display: none;
+        }
+        .troubleshooter-step.active {
+            display: block;
         }
         .copy-btn {
-            background: #6c757d;
-            color: white;
-            border: none;
-            padding: 4px 8px;
-            border-radius: 4px;
             cursor: pointer;
-            font-size: 0.8em;
-            margin-left: 10px;
+            transition: all 0.3s ease;
         }
         .copy-btn:hover {
-            background: #5a6268;
+            transform: scale(1.05);
+        }
+        
+        /* View Management */
+        .view {
+            display: none;
+        }
+        .view.active {
+            display: block;
         }
     </style>
 </head>
-<body>
-    <div class="max-w-4xl mx-auto">
-        <header class="text-center mb-8">
-            <h1 class="text-4xl font-bold text-white mb-2">Firebase Connection Troubleshooter</h1>
-            <p class="text-white text-lg">Let's diagnose and fix your Firebase connection issues</p>
-        </header>
-
-        <div class="glass-container">
-            <h2 class="text-2xl font-semibold mb-4">Connection Status</h2>
-            <div id="connectionStatus" class="flex items-center mb-4 p-4 bg-red-100 rounded-lg">
-                <span class="status-indicator status-offline"></span>
-                <span class="font-medium">Not connected to Firebase</span>
-            </div>
-            
-            <div class="mb-6">
-                <h3 class="text-xl font-semibold mb-3">Your Firebase Configuration</h3>
-                <div class="bg-gray-100 p-4 rounded-lg mb-4">
-                    <pre id="configDisplay" class="overflow-x-auto"></pre>
-                </div>
-                <button id="testConfigBtn" class="btn-primary">Test This Configuration</button>
-            </div>
+<body class="min-h-screen p-4">
+    <div id="app" class="max-w-7xl mx-auto">
+        <!-- Firebase Status Indicator -->
+        <div id="firebaseStatus" class="fixed top-4 right-4 glass-container p-3 rounded-lg flex items-center gap-2 z-50 status-disconnected">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L极速快310 8.586 8.707 7.293z" clip-rule="evenodd" />
+            </svg>
+            <span class="text-sm">Firebase: Disconnected</span>
         </div>
 
-        <div class="glass-container">
-            <h2 class="text-2xl font-semibold mb-4">Troubleshooting Steps</h2>
-            
-            <div class="mb-6">
-                <h3 class="text-lg font-semibold mb-2 flex items-center">
-                    <span class="step-number">1</span> Check Firestore Security Rules
-                </h3>
-                <p class="mb-3">The most common issue is with Firestore security rules. You need to allow read/write access.</p>
-                <div class="bg-gray-800 p-4 rounded-lg mb-3">
-                    <p class="text-white text-sm mb-2">Go to Firebase Console → Firestore Database → Rules tab and paste these rules:</p>
-                    <div class="bg-gray-900 p-3 rounded relative">
-                        <pre class="text-green-400 overflow-x-auto" id="rulesCode">rules_version = '2';
+        <!-- Troubleshooter View -->
+        <div id="troubleshooterView" class="view active">
+            <header class="relative text-center py-8 fade-in">
+                <h1 class="text-5xl md:text-7xl font-bold main-title">Firebase Connection Troubleshooter</h1>
+                <p class="mt-4 text-lg text-gray-200 accent-text">Let's fix your Firebase connection issues</p>
+            </header>
+
+            <div class="glass-container p-6 md:p-8 rounded-2xl mb-8">
+                <h2 class="text-3xl font-bold mb-6 text-white main-title">Connection Status</h2>
+                <div id="connectionStatus" class="flex items-center mb-6 p-4 bg-red-900 bg-opacity-50 rounded-lg">
+                    <span class="status-indicator status-offline"></span>
+                    <span class="font-medium">Not connected to Firebase</span>
+                </div>
+                
+                <div class="mb-6">
+                    <h3 class="text-xl font-semibold mb-3 text-white">Your Firebase Configuration</h3>
+                    <div class="bg-gray-900 p-4 rounded-lg mb-4">
+                        <pre id="configDisplay" class="overflow-x-auto text-green-400"></pre>
+                    </div>
+                    <button id="testConfigBtn" class="themed-button py-2 px-4 rounded-lg">Test This Configuration</button>
+                </div>
+            </div>
+
+            <div class="glass-container p-6 md:p-8 rounded-2xl">
+                <h2 class="text-3xl font-bold mb-6 text-white main-title">Troubleshooting Steps</h2>
+                
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold mb-2 flex items-center text-white">
+                        <span class="step-number bg-yellow-500 flex items-center justify-center w-8 h-8 rounded-full mr-3">1</span> Check Firestore Security Rules
+                    </h3>
+                    <p class="mb-3 text-gray-300">The most common issue is with Firestore security rules. You need to allow read/write access.</p>
+                    <div class="bg-gray-900 p-4 rounded-lg mb-3">
+                        <p class="text-white text-sm mb-2">Go to Firebase Console → Firestore Database → Rules tab and paste these rules:</p>
+                        <div class="bg-gray-800 p-3 rounded relative">
+                            <pre class="text-green-400 overflow-x-auto" id="rulesCode">rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     match /{document=**} {
@@ -136,57 +190,161 @@ service cloud.firestore {
     }
   }
 }</pre>
-                        <button class="copy-btn absolute top-2 right-2" onclick="copyToClipboard('rulesCode')">Copy</button>
+                            <button class="copy-btn absolute top-2 right-2 themed-button p-1 text-xs" onclick="copyToClipboard('rulesCode')">Copy</button>
+                        </div>
+                    </div>
+                    <p class="text-yellow-300 bg-yellow-900 bg-opacity-30 p-3 rounded-lg">
+                        <strong>Note:</strong> These rules allow anyone to read and write to your database. For production, implement proper authentication.
+                    </p>
+                </div>
+                
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold mb-2 flex items-center text-white">
+                        <span class="step-number bg-yellow-500 flex items-center justify-center w-8 h-8 rounded-full mr-3">2</span> Enable Firestore Database
+                    </h3>
+                    <p class="mb-3 text-gray-300">Make sure you've created and enabled Firestore in your Firebase project:</p>
+                    <ol class="list-decimal pl-6 mb-3 text-gray-300">
+                        <li class="mb-2">Go to the <a href="https://console.firebase.google.com/" target="_blank" class="text-yellow-400 hover:underline">Firebase Console</a></li>
+                        <li class="mb-2">Select your project</li>
+                        <li class="mb-2">Click on "Firestore Database" in the left sidebar</li>
+                        <li class="mb-2">Click "Create Database" if you haven't already</li>
+                        <li>Choose a location and start in test mode</li>
+                    </ol>
+                </div>
+                
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold mb-2 flex items-center text-white">
+                        <span class="step-number bg-yellow-500 flex items-center justify-center w-8 h-8 rounded-full mr-3">3</span> Test Connection Again
+                    </h3>
+                    <p class="mb-3 text-gray-300">After completing the steps above, test your connection again:</p>
+                    <button id="finalTestBtn" class="themed-button py-2 px-4 rounded-lg mb-4">Test Connection Again</button>
+                    <div id="testResults" class="hidden p-4 bg-blue-900 bg-opacity-30 rounded-lg">
+                        <h4 class="font-semibold mb-2 text-white">Test Results:</h4>
+                        <pre id="testResultText" class="overflow-x-auto text-green-400"></pre>
                     </div>
                 </div>
-                <p class="text-yellow-700 bg-yellow-100 p-3 rounded-lg">
-                    <strong>Note:</strong> These rules allow anyone to read and write to your database. For production, implement proper authentication.
-                </p>
             </div>
             
-            <div class="mb-6">
-                <h3 class="text-lg font-semibold mb-2 flex items-center">
-                    <span class="step-number">2</span> Enable Firestore Database
-                </h3>
-                <p class="mb-3">Make sure you've created and enabled Firestore in your Firebase project:</p>
-                <ol class="list-decimal pl-6 mb-3">
-                    <li class="mb-2">Go to the <a href="https://console.firebase.google.com/" target="_blank" class="text-blue-600 hover:underline">Firebase Console</a></li>
-                    <li class="mb-2">Select your project</li>
-                    <li class="mb-2">Click on "Firestore Database" in the left sidebar</li>
-                    <li class="mb-2">Click "Create Database" if you haven't already</li>
-                    <li>Choose a location and start in test mode</li>
-                </ol>
-            </div>
-            
-            <div class="mb-6">
-                <h3 class="text-lg font-semibold mb-2 flex items-center">
-                    <span class="step-number">3</span> Check Project Configuration
-                </h3>
-                <p class="mb-3">Verify that your Firebase project is properly configured:</p>
-                <ul class="list-disc pl-6 mb-3">
-                    <li class="mb-2">Your project should have a Blaze plan (pay-as-you-go) for external access (though Spark plan works for basic usage)</li>
-                    <li class="mb-2">Make sure your app is registered in the Firebase project</li>
-                    <li class="mb-2">Verify that the API keys are correct and not restricted</li>
-                </ul>
-            </div>
-            
-            <div>
-                <h3 class="text-lg font-semibold mb-2 flex items-center">
-                    <span class="step-number">4</span> Test Connection Again
-                </h3>
-                <p class="mb-3">After completing the steps above, test your connection again:</p>
-                <button id="finalTestBtn" class="btn-primary">Test Connection Again</button>
-                <div id="testResults" class="mt-4 p-4 bg-blue-50 rounded-lg hidden">
-                    <h4 class="font-semibold mb-2">Test Results:</h4>
-                    <pre id="testResultText" class="overflow-x-auto"></pre>
-                </div>
+            <div class="glass-container p-6 md:p-8 rounded-2xl text-center mt-8">
+                <h2 class="text-3xl font-bold mb-6 text-white main-title">Next Steps</h2>
+                <p class="mb-4 text-gray-300">Once your Firebase connection is working, you can proceed to use the complaint system.</p>
+                <button id="goToComplaintSystem" class="themed-button py-3 px-6 rounded-lg text-lg" disabled>Go to Complaint System</button>
             </div>
         </div>
-        
-        <div class="glass-container text-center">
-            <h2 class="text-2xl font-semibold mb-4">Next Steps</h2>
-            <p class="mb-4">Once your Firebase connection is working, you can proceed to use the complaint system.</p>
-            <button id="goToComplaintSystem" class="btn-primary" disabled>Go to Complaint System</button>
+
+        <!-- Complaint System View -->
+        <div id="complaintSystemView" class="view">
+            <!-- Header -->
+            <header class="relative text-center py-8 fade-in">
+                <div id="adminLoginContainer" class="absolute top-8 right-4">
+                    <button id="adminLoginBtn" class="themed-button py-2 px-5 rounded-lg text-sm font-bold transition hover:scale-105">Admin Login</button>
+                </div>
+                <h1 class="text-5xl md:text-7xl font-bold main-title">Complaint Portal</h1>
+                <p class="mt-4 text-lg text-gray-200 accent-text">Your Voice Matters. We're Listening.</p>
+            </header>
+
+            <!-- Main Content -->
+            <main id="mainContent" class="fade-in" style="animation-delay: 0.2s;">
+                <!-- User View -->
+                <div id="userView">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- Complaint Submission Form -->
+                        <div id="complaintFormContainer" class="glass-container p-6 md:p-8 rounded-2xl">
+                            <h2 class="text-3xl font-bold mb-6 text-white main-title">Lodge a New Complaint</h2>
+                            <form id="complaintForm" class="space-y-4">
+                                <input type="text" id="name" placeholder="Your Full Name" class="w-full p-3 rounded-lg form-input" required>
+                                <input type="tel" id="mobile" placeholder="Your Mobile Number" class="w-full p-3 rounded-lg form-input" required pattern="[0-9]{10}">
+                                <select id="occupation" class="w-full p-3 rounded-lg form-select" required>
+                                    <option value="" disabled selected>Select Your Occupation</option>
+                                    <option value="Student">Student</option>
+                                    <option value="Citizen">Citizen</option>
+                                    <option value="Teaching Staff">Teaching Staff</option>
+                                    <option value="Non-Teaching Staff">Non-Teaching Staff</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                                <select id="complaintType" class="w-full p-3 rounded-lg form-select极速快3" required>
+                                    <option value="" disabled selected>Select Complaint Type</option>
+                                    <option value="Infrastructure">Infrastructure</option>
+                                    <option value="Sanitation极速快3">Sanitation</option>
+                                    <option value="Administrative">Administrative</option>
+                                    <option value="Harassment">Harassment</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                                <textarea id="complaintText" rows="4" placeholder="Describe your complaint in detail..." class="w-full p-3 rounded-lg form-input" required></textarea>
+                                <button type="submit" class="w-full p-3 font-bold rounded-lg themed-button">
+                                    <span id="submit-text">Submit Complaint</span>
+                                    <span id="submit-spinner" class="hidden">Submitting...</span>
+                                </button>
+                                <p id="submitError" class="text-red-400 text-center pt-2 hidden"></p>
+                            </form>
+                        </div>
+
+                        <!-- Complaint Tracker -->
+                        <div id="trackerContainer" class="glass-container p-6 md:p-8 rounded-2xl">
+                            <h2 class="text-3xl font-bold mb-6 text-white main-title">Track Your Complaint</h2>
+                            <form id="trackForm" class="space-y-4">
+                                <input type="text" id="tokenInput" placeholder="Enter Your Complaint Token" class="w-full p-3 rounded-lg form-input" required>
+                                <button type="submit极速快3" class="w-full p-3 font-bold rounded-lg themed-button">Track Status</button>
+                            </form>
+                            <div id="trackingResult" class="mt-6 hidden">
+                                <!-- Status will be displayed here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Login View -->
+                <div id="adminLoginView" class="hidden">
+                    <div class="max-w-md mx-auto glass-container p-8 rounded-2xl fade-in">
+                        <h2 class="text-3xl font-bold mb-6 text-center text-white main-title">Admin Login</h2>
+                        <form id="adminLoginForm" class="space-y-4">
+                            <input type="password" id="adminPassword" placeholder="Enter Admin Password" class="w-full p-3 rounded-lg form-input" required>
+                            <button type="submit" class="w-full p-3 font-bold rounded-lg themed-button">Login</button>
+                            <p id="adminError" class="text-red-400 text-center hidden">Invalid Password.</p>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Admin Panel View -->
+                <div id="adminPanelView" class="hidden">
+                    <div class="glass-container p-6 md:p-8 rounded-2xl fade-in">
+                        <div class="flex justify-between items-center mb-6">
+                            <div class="flex items-center gap-4">
+                                <h2 class="text-3极速快3xl font-bold text-white main-title">Admin Dashboard</h2>
+                                <button id="refreshBtn" class="themed-button p-2 rounded-full text-sm" title="Refresh Complaints">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
+                                        <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span id="connection-status" title="Connection Status"></span>
+                                <button id="logoutBtn" class="p-2 px-4 font-bold rounded-lg themed-button text-sm">Logout</button>
+                            </div>
+                        </div>
+                        <div id="complaintList" class="space-y-4 max-h-[60vh] overflow-y-auto pr-2">
+                            <!-- Complaints will be loaded here -->
+                            <p class="text-center text-gray-400">Loading complaints...</p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+            
+            <!-- Thank You View -->
+            <div id="thankYouView" class="fixed inset-0 bg-dark-forest bg-opacity-95 flex items-center justify-center hidden z-50 p-4">
+                <div class="glass-container p-8 rounded-2xl text-center max-w-lg w-full fade-in">
+                    <h3 class="text-4xl font-bold main-title mb-4">Thank You!</h3>
+                    <p class="text-gray-300 mb-4 text-lg">Your complaint has been successfully registered.</p>
+                    <p极速快3 class="text-gray-300 mb-2">Please save your token to track the status:</p>
+                    <div class="bg-gray-900 border border-dashed border-yellow-400 p-4 rounded-lg flex items-center justify-between">
+                        <span id="tokenDisplayThankYou" class="font-mono text-xl text-green-400 break-all"></span>
+                        <button id="copyTokenBtnThankYou" class="ml-4 p-2 rounded-lg themed-button text-sm">Copy</button>
+                    </div>
+                    <p id="copy-success-thank-you" class="text-green-400 mt-2 hidden">Copied!</p>
+                    <button id="goBackBtn" class="mt-8 w-full p-3 font-bold rounded-lg themed-button">Lodge Another Complaint</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -201,6 +359,18 @@ service cloud.firestore {
             appId: "1:269132567387:web:c76748a713e8d79658c07e",
             measurementId: "G-6863CC7ZT5"
         };
+        
+        // Firebase variables
+        let db;
+        let complaintsCollection;
+        const ADMIN_PASS = "admin123"; // Change this in production
+        
+        // DOM Elements
+        const troubleshooterView = document.getElementById('troubleshooterView');
+        const complaintSystemView = document.getElementById('complaintSystemView');
+        const firebaseStatus = document.getElementById('firebaseStatus');
+        const connectionStatus = document.getElementById('connectionStatus');
+        const goToComplaintSystemBtn = document.getElementById('goToComplaintSystem');
         
         // Display the configuration
         document.getElementById('configDisplay').textContent = JSON.stringify(firebaseConfig, null, 2);
@@ -219,7 +389,8 @@ service cloud.firestore {
                 firebase.initializeApp(firebaseConfig);
                 
                 // Initialize Firestore
-                const db = firebase.firestore();
+                db = firebase.firestore();
+                complaintsCollection = db.collection('complaints');
                 const testCollection = db.collection('test_connection');
                 
                 // Try to write a test document
@@ -236,21 +407,34 @@ service cloud.firestore {
                             });
                             
                             statusElement.innerHTML = '<span class="status-indicator status-online"></span><span class="font-medium">Successfully connected to Firebase!</span>';
-                            statusElement.className = 'flex items-center mb-4 p-4 bg-green-100 rounded-lg';
+                            statusElement.className = 'flex items-center mb-6 p-4 bg-green-900 bg-opacity-50 rounded-lg';
                             testResultText.textContent = '✓ Firebase connection successful!\n✓ Firestore write operation successful!\n✓ Firestore read operation successful!\n✓ Firestore delete operation successful!';
                             testResults.classList.remove('hidden');
-                            document.getElementById('goToComplaintSystem').disabled = false;
+                            goToComplaintSystemBtn.disabled = false;
+                            
+                            // Update Firebase status indicator
+                            firebaseStatus.innerHTML = `
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                </svg>
+                                <span class="text-sm">Firebase: Connected</span>
+                            `;
+                            firebaseStatus.classList.remove('status-disconnected');
+                            firebaseStatus.classList.add('status-connected');
                         });
                 })
                 .catch(error => {
                     statusElement.innerHTML = '<span class="status-indicator status-offline"></span><span class="font-medium">Failed to connect to Firebase</span>';
-                    statusElement.className = 'flex items-center mb-4 p-4 bg-red-100 rounded-lg';
+                    statusElement.className = 'flex items-center mb-6 p-4 bg-red-900 bg-opacity-50 rounded-lg';
                     testResultText.textContent = `Error: ${error.message}\n\nThis is typically caused by:\n1. Incorrect security rules\n2. Firestore not being enabled\n3. Project configuration issues`;
                     testResults.classList.remove('hidden');
+                    
+                    // Update Firebase status indicator
+                    document.getElementById('firebaseErrorDetail').textContent = error.message;
                 });
             } catch (error) {
                 statusElement.innerHTML = '<span class="status-indicator status-offline"></span><span class="font-medium">Failed to initialize Firebase</span>';
-                statusElement.className = 'flex items-center mb-4 p-4 bg-red-100 rounded-lg';
+                statusElement.className = 'flex items-center mb-6 p-4 bg-red-900 bg-opacity-50 rounded-lg';
                 testResultText.textContent = `Initialization Error: ${error.message}\n\nThis might be caused by:\n1. Invalid Firebase configuration\n2. Network issues\n3. Firebase SDK loading problems`;
                 testResults.classList.remove('hidden');
             }
@@ -268,12 +452,23 @@ service cloud.firestore {
             });
         }
         
+        // Switch to complaint system
+        function goToComplaintSystem() {
+            troubleshooterView.classList.remove('active');
+            complaintSystemView.classList.add('active');
+            initializeComplaintSystem();
+        }
+        
+        // Initialize the complaint system
+        function initializeComplaintSystem() {
+            // This would initialize your complaint system functionality
+            console.log("Complaint system initialized");
+        }
+        
         // Event listeners
         document.getElementById('testConfigBtn').addEventListener('click', testFirebaseConnection);
         document.getElementById('finalTestBtn').addEventListener('click', testFirebaseConnection);
-        document.getElementById('goToComplaintSystem').addEventListener('click', () => {
-            alert('Once the connection is working, you can implement the complaint system.');
-        });
+        goToComplaintSystemBtn.addEventListener('click', goToComplaintSystem);
         
         // Initial test on load
         window.addEventListener('load', () => {
