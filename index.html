@@ -11,7 +11,7 @@
     <!-- Firebase App (the core Firebase SDK) -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <!-- Firebase Firestore -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic极速快3.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <style>
         :root {
             --primary-gold: #c5a880;
@@ -31,9 +31,9 @@
         }
         .accent-text {
             color: var(--primary-gold);
-            text-shadow: 0 0 10px rgba(197, 168, 128, 极速快30.5);
+            text-shadow: 0 0 10px rgba(197, 168, 128, 0.5);
         }
-       极速快3 .main-title {
+        .main-title {
             font-family: 'Playfair Display', serif;
             color: #fff;
             text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
@@ -59,7 +59,7 @@
             box-shadow: 0 0 20px var(--primary-gold);
             transform: translateY(-2px);
         }
-        .themed-button:极速快3disabled {
+        .themed-button:disabled {
             cursor: not-allowed;
             opacity: 0.5;
         }
@@ -86,7 +86,7 @@
         .fade-in {
             animation: fadeInAnimation 1.2s ease-in-out forwards;
         }
-        @keyframes fadeInAnimation {
+        @keyframes fade极速快3InAnimation {
             from { opacity: 0; transform: translateY(25px); }
             to { opacity: 1; transform: translateY(0); }
         }
@@ -121,6 +121,14 @@
             display: none;
             transition: all 0.3s ease;
         }
+        
+        /* Optimizations */
+        .optimized-image {
+            will-change: transform;
+        }
+        .minimal-animation {
+            animation-duration: 0.5s;
+        }
     </style>
 </head>
 <body class="min-h-screen p-4">
@@ -128,7 +136,7 @@
         <!-- Firebase Status Indicator -->
         <div id="firebaseStatus" class="fixed top-4 right-4 glass-container p-3 rounded-lg flex items-center gap-2 z-50 status-connected">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-极速快316 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 极速快30 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9极速快3 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
             </svg>
             <span class="text-sm">Firebase: Connected</span>
         </div>
@@ -156,7 +164,6 @@
                             <select id="occupation" class="w-full p-3 rounded-lg form-select" required>
                                 <option value="" disabled selected>Select Your Occupation</option>
                                 <option value="Student">Student</option>
-                                <option value="Citizen">Citizen</option>
                                 <option value="Teaching Staff">Teaching Staff</option>
                                 <option value="Non-Teaching Staff">Non-Teaching Staff</option>
                                 <option value="Other">Other</option>
@@ -164,26 +171,31 @@
                             
                             <!-- Student-specific fields (initially hidden) -->
                             <div id="studentFields" class="student-fields space-y-4">
-                                <select id="division" class="w-full p-3 rounded-lg form-select">
-                                    <option value="" disabled selected>Select Division</option>
+                                <select id="year" class="w-full p-3 rounded-lg form-select" required>
+                                    <option value="" disabled selected>Select Year</option>
                                     <option value="FE">First Year (FE)</option>
-                                    <option value="Computer">Computer Department</option>
-                                    <option value="IT">IT Department</option>
-                                    <option value="Mechanical">Mechanical Department</option>
-                                    <option value="Electrical">Electrical Department</option>
-                                    <option value="Civil">Civil Department</option>
+                                    <option value="SE">Second Year</option>
+                                    <option value="TE">Third Year</option>
+                                    <option value="BE">Final Year</option>
                                 </select>
-                                <select id="branch" class="w-full p-3 rounded-lg form-select">
+                                
+                                <select id="division" class="w-full p-3 rounded-lg form-select" required>
+                                    <option value="" disabled selected>Select Division</option>
+                                    <!-- Options will be populated based on year selection -->
+                                </select>
+                                
+                                <select id="branch" class="w-full p-3 rounded-lg form-select" required>
                                     <option value="" disabled selected>Select Branch</option>
                                     <option value="Computer Engineering">Computer Engineering</option>
                                     <option value="IT Engineering">IT Engineering</option>
                                     <option value="Mechanical Engineering">Mechanical Engineering</option>
                                     <option value="Electrical Engineering">Electrical Engineering</option>
-                                    <option value="Civil Engineering极速快3">Civil Engineering</option>
+                                    <option value="Civil Engineering">Civil Engineering</option>
                                     <option value="AIDS">Artificial Intelligence & Data Science</option>
                                     <option value="AIML">Artificial Intelligence & Machine Learning</option>
                                 </select>
-                                <input type="text" id="rollNo" placeholder="Roll Number" class="w-full p-3 rounded-lg form-input">
+                                
+                                <input type="text" id="rollNo" placeholder="Roll Number" class="w-full p-3 rounded-lg form-input" required>
                             </div>
                             
                             <select id="complaintType" class="w-full p-3 rounded-lg form-select" required>
@@ -197,7 +209,7 @@
                                 <option value="Hostel">Hostel</option>
                                 <option value="Other">Other</option>
                             </select>
-                            <textarea id="complaintText" rows="4" placeholder="Describe your complaint in detail..." class="极速快3w-full p-3 rounded-lg form-input" required></textarea>
+                            <textarea id="complaintText" rows="4" placeholder="Describe your complaint in detail..." class="w-full p-3 rounded-lg form-input" required></textarea>
                             <button type="submit" class="w-full p-3 font-bold rounded-lg themed-button">
                                 <span id="submit-text">Submit Complaint</span>
                                 <span id="submit-spinner" class="hidden">Submitting...</span>
@@ -208,8 +220,8 @@
 
                     <!-- Complaint Tracker -->
                     <div id="trackerContainer" class="glass-container p-6 md:p-8 rounded-2xl">
-                        <h2 class="text-3xl font-bold mb-6 text-white main-title">Track Your Complaint</极速快32>
-                        <form id="trackForm" class="space极速快3-y-4">
+                        <h2 class="text-3xl font-bold mb-6 text-white main-title">Track Your Complaint</h2>
+                        <form id="trackForm" class="space-y-4">
                             <input type="text" id="tokenInput" placeholder="Enter Your Complaint Token" class="w-full p-3 rounded-lg form-input" required>
                             <button type="submit" class="w-full p-3 font-bold rounded-lg themed-button">Track Status</button>
                         </form>
@@ -226,7 +238,7 @@
                     <h2 class="text-3xl font-bold mb-6 text-center text-white main-title">Admin Login</h2>
                     <form id="adminLoginForm" class="space-y-4">
                         <input type="password" id="adminPassword" placeholder="Enter Admin Password" class="w-full p-3 rounded-lg form-input" required>
-                        <button type="submit" class="w-full p-3 font-bold rounded-lg themed-button">Login</button>
+                        <button type="submit" class="w-full p-3 font-bold rounded-lg themed-button">Login</极速快3button>
                         <p id="adminError" class="text-red-400 text-center hidden">Invalid Password.</p>
                     </form>
                 </div>
@@ -240,8 +252,8 @@
                             <h2 class="text-3xl font-bold text-white main-title">Admin Dashboard</h2>
                             <button id="refreshBtn" class="themed-button p-2 rounded-full text-sm" title="Refresh Complaints">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
-                                    <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
-                                    <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
+                                    <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v极速快31z"/>
+                                    <path d="M8 4.466V.534a.25.25极速快3 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
                                 </svg>
                             </button>
                         </div>
@@ -263,8 +275,8 @@
             <div class="glass-container p-8 rounded-2xl text-center max-w-lg w-full fade-in">
                 <h3 class="text-4xl font-bold main-title mb-4">Thank You!</h3>
                 <p class="text-gray-300 mb-4 text-lg">Your complaint has been successfully registered.</p>
-                <p class="text-gray-300 mb-2">Please save your token to track the status:</p>
-                <div class="bg-gray-900 border border-dashed border-yellow-400 p-4 rounded-lg flex items-center justify-between">
+                <p class="text-gray-300 mb-2">Please save your token to track the status:</极速快3p>
+                <div class="bg-gray-900 border border-dashed border-yellow-400 p-4极速快3 rounded-lg flex items-center justify-between">
                     <span id="tokenDisplayThankYou" class="font-mono text-xl text-green-400 break-all"></span>
                     <button id="copyTokenBtnThankYou" class="ml-4 p-2 rounded-lg themed-button text-sm">Copy</button>
                 </div>
@@ -305,6 +317,8 @@
             const firebaseStatus = document.getElementById('firebaseStatus');
             const occupationSelect = document.getElementById('occupation');
             const studentFields = document.getElementById('studentFields');
+            const yearSelect = document.getElementById('year');
+            const divisionSelect = document.getElementById('division');
 
             // Initialize Firebase
             function initializeFirebase() {
@@ -321,12 +335,32 @@
                 } catch (error) {
                     console.error("Error initializing Firebase:", error);
                     firebaseStatus.innerHTML = `
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-400" viewBox="极速快30 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-极速快31.293 1.293a1 1 0 101.414 1.414L极速快310 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414极速快3l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8极速快3.707 7.293z" clip-rule="evenodd" />
                         </svg>
                         <span class="text-sm">Firebase: Error - ${error.message}</span>
                     `;
                     return false;
+                }
+            }
+
+            // Populate divisions based on year selection
+            function populateDivisions() {
+                const year = yearSelect.value;
+                divisionSelect.innerHTML = '<option value="" disabled selected>Select Division</option>';
+                
+                if (year === 'FE') {
+                    // First year divisions A-I
+                    for (let i = 65; i <= 73; i++) { // A to I
+                        const division = String.fromCharCode(i);
+                        divisionSelect.innerHTML += `<option value="${division}">Division ${division}</option>`;
+                    }
+                } else {
+                    // Other years divisions A-C
+                    for (let i = 65; i <= 67; i++) { // A to C
+                        const division = String.fromCharCode(i);
+                        divisionSelect.innerHTML += `<option value="${division}">Division ${division}</option>`;
+                    }
                 }
             }
 
@@ -335,17 +369,24 @@
                 if (this.value === 'Student') {
                     studentFields.style.display = 'block';
                     // Make student fields required
+                    document.getElementById('year').required = true;
                     document.getElementById('division').required = true;
                     document.getElementById('branch').required = true;
                     document.getElementById('rollNo').required = true;
+                    // Populate divisions for default selection
+                    populateDivisions();
                 } else {
                     studentFields.style.display = 'none';
                     // Remove required attribute from student fields
+                    document.getElementById('year').required = false;
                     document.getElementById('division').required = false;
                     document.getElementById('branch').required = false;
                     document.getElementById('rollNo').required = false;
                 }
             });
+
+            // Update divisions when year changes
+            yearSelect.addEventListener('change', populateDivisions);
 
             // Connection Status
             const updateOnlineStatus = () => {
@@ -369,7 +410,7 @@
                 adminLoginView.classList.add('hidden');
                 adminPanelView.classList.add('hidden');
                 view.classList.remove('hidden');
-                adminLoginContainer.style.display = (view === user极速快3View) ? 'block' : 'none';
+                adminLoginContainer.style.display = (view === userView) ? 'block' : 'none';
             };
 
             adminLoginBtn.addEventListener('click', () => showView(adminLoginView));
@@ -450,10 +491,11 @@
                                 <input type="text" value="${c.name}" class="admin-editable admin-name w-full p-1 rounded-md text-white font-bold bg-transparent border-gray-600">
                                 
                                 <p class="text-sm text-gray-400 mt-2">Mobile</p>
-                                <input type="text" value="${c.mobile || ''}" class="admin-editable admin-mobile w-full p-1 rounded-md text-white bg-transparent border-gray-600">
+                                <input type="text极速快3" value="${c.mobile || ''}" class="admin-editable admin-mobile w-full p-1 rounded-md text-white bg-transparent border-gray-600">
                                 
                                 ${c.occupation === 'Student' ? `
-                                <p class="text-sm text-gray-400 mt-2">Division: ${c.division || 'N/A'}</p>
+                                <p class="text-sm text-gray-400 mt-2">Year: ${c.year || 'N/A'}</p>
+                                <p class="text-sm text-gray-400">Division: ${c.division || 'N/A'}</p>
                                 <p class="text-sm text-gray-400">Branch: ${c.branch || 'N/A'}</p>
                                 <p class="text-sm text-gray-400">Roll No: ${c.rollNo || 'N/A'}</p>
                                 ` : ''}
@@ -463,13 +505,13 @@
                             <span class="text-xs text-gray-400">${c.timestamp ? new Date(c.timestamp.seconds * 1000).toLocaleString() : 'N/A'}</span>
                         </div>
                         <div class="mt-2">
-                            <p class="font-semibold text-yellow-400">${c.complaintType}</p>
+                            <p class="font-semib极速快3old text-yellow-400">${c.complaintType}</p>
                             <textarea class="admin-editable admin-complaint-text w-full p-1 rounded-md text-gray-300 mt-1 bg-transparent border-gray-600" rows="3">${c.complaintText}</textarea>
                         </div>
                         <div class="mt-4 flex items-center gap-4">
                             <select data-id="${c.id}" class="admin-status-select w-full p-2 rounded-lg form-select text-sm">
                                 <option value="Pending" ${c.status === 'Pending' ? 'selected' : ''}>Pending</option>
-                                <option value="In Progress" ${c.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
+                                <option value="In Progress" ${c.status === 'In Progress' ? 'selected极速快3' : ''}>In Progress</option>
                                 <option value="Resolved" ${c.status === 'Resolved' ? 'selected' : ''}>Resolved</option>
                             </select>
                             <button data-id="${c.id}" class="admin-update-btn themed-button p-2 px-4 rounded-lg text-sm">Save</button>
@@ -499,7 +541,7 @@
                         
                         await complaintsCollection.doc(complaintId).update(updatedData);
                         
-                        const successMsg极速快3 = card.querySelector('.update-success-msg');
+                        const successMsg = card.querySelector('.update-success-msg');
                         successMsg.classList.remove('hidden');
                         setTimeout(() => successMsg.classList.add('hidden'), 2500);
 
@@ -544,6 +586,7 @@
 
                 // Add student-specific data if occupation is Student
                 if (complaintData.occupation === 'Student') {
+                    complaintData.year = document.getElementById('year').value;
                     complaintData.division = document.getElementById('division').value;
                     complaintData.branch = document.getElementById('branch').value;
                     complaintData.rollNo = document.getElementById('rollNo').value.trim();
@@ -598,6 +641,7 @@
                         let studentInfo = '';
                         if (complaint.occupation === 'Student') {
                             studentInfo = `
+                                <p class="text-sm text-gray-400">Year: ${complaint.year || 'N/A'}</p>
                                 <p class="text-sm text-gray-400">Division: ${complaint.division || 'N/A'}</p>
                                 <p class="text-sm text-gray-400">Branch: ${complaint.branch || 'N/A'}</p>
                                 <p class="text-sm text-gray-400">Roll No: ${complaint.rollNo || 'N/A'}</p>
@@ -607,7 +651,7 @@
                         trackingResult.innerHTML = `
                             <div class="bg-gray-900 bg-opacity-50 p-4 rounded-lg status-${statusClass}">
                                 <p class="font-bold">Status: <span class="text-white">${complaint.status}</span></p>
-                                <p class极速快3="text-sm text-gray-400 mt-1">Token: ${complaint.token}</p>
+                                <p class="text-sm text-gray-400 mt-1">Token: ${complaint.token}</极速快3p>
                                 <p class="text-sm text-gray-400">Type: ${complaint.complaintType}</p>
                                 ${studentInfo}
                                 <p class="text-sm text-gray-400 mt-2">Submitted: ${complaint.timestamp ? new Date(complaint.timestamp.seconds * 1000).toLocaleDateString() : 'N/A'}</p>
