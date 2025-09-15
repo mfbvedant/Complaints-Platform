@@ -1,1 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Self-Hosted Complaint System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gold: #c5a880;
+            --dark-forest: #0a1412;
+            --off-white: #f3f3f3;
+            --glass-bg: rgba(10, 20, 18, 0.6);
+        }
+        body {
+            background-color: var(--dark-forest);
+            font-family: 'Lato', sans-serif;
+            color: var(--off-white);
+            overflow-x: hidden;
+            background-image: url('https://images.unsplash.com/photo-1448375240586-882707db888b?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center center;
+            background-attachment: fixed;
+        }
+        .accent-text {
+            color: var(--primary-gold);
+            text-shadow: 0 0 10px rgba(197, 168, 128, 0.5);
+        }
+        .main-title {
+            font-family: 'Playfair Display', serif;
+            color: #fff;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
+        }
+        .glass-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px) saturate(120%);
+            -webkit-backdrop-filter: blur(12px) saturate(120%);
+            border: 1px solid rgba(197, 168, 128, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            transition: all 0.3s ease-in-out;
+        }
+        .themed-button {
+            border: 1px solid var(--primary-gold);
+            color: var(--primary-gold);
+            background: transparent;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 5px var(--primary-gold), inset 0 0 5px rgba(197, 168, 128, 0.3);
+        }
+        .themed-button:hover:not(:disabled) {
+            color: var(--dark-forest);
+            background: var(--primary-gold);
+            box-shadow: 0 0 20px var(--primary-gold);
+            transform: translateY(-2px);
+        }
+        .themed-button:disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+        .form-input, .form-select, .admin-editable {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(197, 168, 128, 0.5);
+            color: #fff;
+            transition: all 0.3s ease;
+        }
+        .form-input:focus, .form-select:focus, .admin-editable:focus {
+            outline: none;
+            box-shadow: 0 0 15px rgba(197, 168, 128, 0.7);
+            border-color: var(--primary-gold);
+        }
+        .form-select option {
+            background: var(--dark-forest);
+            color: #fff;
+        }
+        .status-pending { border-left: 4px solid #facc15; }
+        .status-in-progress { border-left: 4px solid #38bdf8; }
+        .status-resolved { border-left: 4px solid #34d399; }
 
+        /* Animation */
+        .fade-in {
+            animation: fadeInAnimation 1.2s ease-in-out forwards;
+        }
+        @keyframes fadeInAnimation {
+            from { opacity: 0; transform: translateY(25px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Connection Status */
+        #connection-status {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            transition: background-color 0.5s ease;
+        }
+        #connection-status.online { background-color: #34d399; box-shadow: 0 0 8px #34d399; }
+        #connection-status.offline { background-color: #f87171; box-shadow: 0 0 8px #f87171; }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--dark-forest);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-gold);
+            border-radius: 5px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #e6c599;
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4">
+    <div id="app" class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <header class="relative text-center py-8 fade-in">
+            <div id="adminLoginContainer" class="absolute top-8 right-4">
+                <button id="adminLoginBtn" class="themed-button py-2 px-5 rounded-lg text-sm font-bold transition hover:scale-105">Admin Login</button>
+            </div>
+            <h1 class="text-5xl md:text-7xl font-bold main-title">Complaint Portal</h1>
+            <p class="mt-4 text-lg text-gray-200 accent-text">Your Voice Matters. We're Listening.</p>
+        </header>
+
+        <!-- Main Content -->
+        <main id="mainContent" class="fade-in" style="animation-delay: 0.2s;">
+            <!-- User View -->
+            <div id="userView">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Complaint Submission Form -->
+                    <div id="complaintFormContainer" class="glass-container p-6 md:p-8 rounded-2xl">
+                        <h2 class="text-3xl font-bold mb-6 text-white main-title">Lodge a New Complaint</h2>
+                        <form id="complaintForm" class="space-y-4">
+                            <input type="text" id="name" placeholder="Your Full Name" class="w-full p-3 rounded-lg form-input" required>
+                            <input type="tel" id="mobile" placeholder="Your Mobile Number" class="w-full p-3 rounded-lg form-input" required pattern="[0-9]{10}">
+                            <select id="occupation" class="w-full p-3 rounded-lg form-select" required>
+                                <option value="" disabled selected>Select Your Occupation</option>
+                                <option value="Student">Student</option>
+                                <option value="Citizen">Citizen</option>
+                                <option value="Teaching Staff">Teaching Staff</option>
+                                <option value="Non-Teaching Staff">Non-Teaching Staff</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <select id="complaintType" class="w-full p-3 rounded-lg form-select" required>
+                                <option value="" disabled selected>Select Complaint Type</option>
+                                <option value="Infrastructure">Infrastructure</option>
+                                <option value="Sanitation">Sanitation</option>
+                                <option value="Administrative">Administrative</option>
+                                <option value="Harassment">Harassment</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <textarea id="complaintText" rows="4" placeholder="Describe your complaint in detail..." class="w-full p-3 rounded-lg form-input" required></textarea>
+                            <button type="submit" class="w-full p-3 font-bold rounded-lg themed-button">
+                                <span id="submit-text">Submit Complaint</span>
+                                <span id="submit-spinner" class="hidden">Submitting...</span>
+                            </button>
+                            <p id="submitError" class="text-red-400 text-center pt-2 hidden"></p>
+                        </form>
+                    </div>
+
+                    <!-- Complaint Tracker -->
+                    <div id="trackerContainer" class="glass-container p-6 md:p-8 rounded-2xl">
+                        <h2 class="text-3xl font-bold mb-6 text-white main-title">Track Your Complaint</h2>
+                        <form id="trackForm" class="space-y-4">
+                            <input type="text" id="tokenInput" placeholder="Enter Your Complaint Token" class="w-full p-3 rounded-lg form-input" required>
+                            <button type="submit" class="w-full p-3 font-bold rounded-lg themed-button">Track Status</button>
+                        </form>
+                        <div id="trackingResult" class="mt-6 hidden">
+                            <!-- Status will be displayed here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Login View -->
+            <div id="adminLoginView" class="hidden">
+                <div class="max-w-md mx-auto glass-container p-8 rounded-2xl fade-in">
+                    <h2 class="text-3xl font-bold mb-6 text-center text-white main-title">Admin Login</h2>
+                    <form id="adminLoginForm" class="space-y-4">
+                        <input type="password" id="adminPassword" placeholder="Enter Admin Password" class="w-full p-3 rounded-lg form-input" required>
+                        <button type="submit" class="w-full p-3 font-bold rounded-lg themed-button">Login</button>
+                        <p id="adminError" class="text-red-400 text-center hidden">Invalid Password.</p>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Admin Panel View -->
+            <div id="adminPanelView" class="hidden">
+                 <div class="glass-container p-6 md:p-8 rounded-2xl fade-in">
+                    <div class="flex justify-between items-center mb-6">
+                        <div class="flex items-center gap-4">
+                            <h2 class="text-3xl font-bold text-white main-title">Admin Dashboard</h2>
+                            <button id="refreshBtn" class="themed-button p-2 rounded-full text-sm" title="Refresh Complaints">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/><path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/></svg>
+                            </button>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="flex flex-col items-end">
+                                <span id="connection-status" title="Connection Status"></span>
+                                <span class="text-xs text-gray-400 mt-1" id="dataStatus">Local Storage</span>
+                            </div>
+                            <div class="flex gap-2">
+                                <button id="exportBtn" class="p-2 px-4 font-bold rounded-lg themed-button text-sm" title="Export Data">Export</button>
+                                <label for="importInput" class="p-2 px-4 font-bold rounded-lg themed-button text-sm cursor-pointer" title="Import Data">Import</label>
+                                <input type="file" id="importInput" class="hidden" accept=".json">
+                                <button id="logoutBtn" class="p-2 px-4 font-bold rounded-lg themed-button text-sm">Logout</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="complaintList" class="space-y-4 max-h-[60vh] overflow-y-auto pr-2">
+                        <!-- Complaints will be loaded here -->
+                        <p class="text-center text-gray-400">Loading complaints...</p>
+                    </div>
+                 </div>
+            </div>
+        </main>
+        
+        <!-- Thank You View -->
+        <div id="thankYouView" class="fixed inset-0 bg-dark-forest bg-opacity-95 flex items-center justify-center hidden z-50 p-4">
+            <div class="glass-container p-8 rounded-2xl text-center max-w-lg w-full fade-in">
+                <h3 class="text-4xl font-bold main-title mb-4">Thank You!</h3>
+                <p class="text-gray-300 mb-4 text-lg">Your complaint has been successfully registered.</p>
+                <p class="text-gray-300 mb-2">Please save your token to track the status:</p>
+                <div class="bg-gray-900 border border-dashed border-yellow-400 p-4 rounded-lg flex items-center justify-between">
+                    <span id="tokenDisplayThankYou" class="font-mono text-xl text-green-400 break-all"></span>
+                    <button id="copyTokenBtnThankYou" class="ml-4 p-2 rounded-lg themed-button text-sm">Copy</button>
+                </div>
+                <p id="copy-success-thank-you" class="text-green-400 mt-2 hidden">Copied!</p>
+                <button id="goBackBtn" class="mt-8 w-full p-3 font-bold rounded-lg themed-button">Lodge Another Complaint</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Main application
+        function main() {
+            // Database setup
+            let db;
+            const DB_NAME = 'ComplaintSystemDB';
+            const DB_VERSION = 1;
+            const STORE_NAME = 'complaints';
+            const ADMIN_PASS = "admin123"; // Change this in production
+            
+            // DOM Elements
+            const userView = document.getElementById('userView');
+            const adminLoginView = document.getElementById('adminLoginView');
+            const adminPanelView = document.getElementById('adminPanelView');
+            const adminLoginBtn = document.getElementById('adminLoginBtn');
+            const adminLoginContainer = document.getElementById('adminLoginContainer');
+            const mainContent = document.getElementById('mainContent');
+            const thankYouView = document.getElementById('thankYouView');
+            const connectionStatus = document.getElementById('connection-status');
+            const dataStatus = document.getElementById('dataStatus');
+
+            // Initialize database
+            function initDatabase() {
+                return new Promise((resolve, reject) => {
+                    const request = indexedDB.open(DB_NAME, DB_VERSION);
+                    
+                    request.onerror = event => {
+                        console.error("IndexedDB error:", event.target.error);
+                        reject(event.target.error);
+                    };
+                    
+                    request.onsuccess = event => {
+                        db = event.target.result;
+                        console.log("IndexedDB initialized successfully");
+                        resolve(db);
+                    };
+                    
+                    request.onupgradeneeded = event => {
+                        const db = event.target.result;
+                        
+                        // Create the complaints object store if it doesn't exist
+                        if (!db.objectStoreNames.contains(STORE_NAME)) {
+                            const store = db.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
+                            store.createIndex('token', 'token', { unique: true });
+                            store.createIndex('status', 'status', { unique: false });
+                            store.createIndex('timestamp', 'timestamp', { unique: false });
+                            console.log("Object store created successfully");
+                        }
+                    };
+                });
+            }
+
+            // Add a complaint to the database
+            async function addComplaint(complaintData) {
+                return new Promise((resolve, reject) => {
+                    const transaction = db.transaction([STORE_NAME], 'readwrite');
+                    const store = transaction.objectStore(STORE_NAME);
+                    
+                    const request = store.add(complaintData);
+                    
+                    request.onsuccess = () => {
+                        console.log("Complaint added successfully");
+                        resolve(request.result);
+                    };
+                    
+                    request.onerror = event => {
+                        console.error("Error adding complaint:", event.target.error);
+                        reject(event.target.error);
+                    };
+                });
+            }
+
+            // Get all complaints from the database
+            async function getAllComplaints() {
+                return new Promise((resolve, reject) => {
+                    const transaction = db.transaction([STORE_NAME], 'readonly');
+                    const store = transaction.objectStore(STORE_NAME);
+                    const request = store.getAll();
+                    
+                    request.onsuccess = () => {
+                        resolve(request.result);
+                    };
+                    
+                    request.onerror = event => {
+                        console.error("Error getting complaints:", event.target.error);
+                        reject(event.target.error);
+                    };
+                });
+            }
+
+            // Get a complaint by token
+            async function getComplaintByToken(token) {
+                return new Promise((resolve, reject) => {
+                    const transaction = db.transaction([STORE_NAME], 'readonly');
+                    const store = transaction.objectStore(STORE_NAME);
+                    const index = store.index('token');
+                    const request = index.get(token);
+                    
+                    request.onsuccess = () => {
+                        resolve(request.result);
+                    };
+                    
+                    request.onerror = event => {
+                        console.error("Error getting complaint by token:", event.target.error);
+                        reject(event.target.error);
+                    };
+                });
+            }
+
+            // Update a complaint in the database
+            async function updateComplaint(id, updates) {
+                return new Promise(async (resolve, reject) => {
+                    // First get the current complaint
+                    const transaction = db.transaction([STORE_NAME], 'readwrite');
+                    const store = transaction.objectStore(STORE_NAME);
+                    
+                    const getRequest = store.get(id);
+                    
+                    getRequest.onsuccess = () => {
+                        const complaint = getRequest.result;
+                        if (!complaint) {
+                            reject(new Error("Complaint not found"));
+                            return;
+                        }
+                        
+                        // Update the complaint
+                        const updatedComplaint = { ...complaint, ...updates };
+                        
+                        const putRequest = store.put(updatedComplaint);
+                        
+                        putRequest.onsuccess = () => {
+                            resolve(updatedComplaint);
+                        };
+                        
+                        putRequest.onerror = event => {
+                            console.error("Error updating complaint:", event.target.error);
+                            reject(event.target.error);
+                        };
+                    };
+                    
+                    getRequest.onerror = event => {
+                        console.error("Error getting complaint for update:", event.target.error);
+                        reject(event.target.error);
+                    };
+                });
+            }
+
+            // Export all data as JSON
+            async function exportData() {
+                try {
+                    const complaints = await getAllComplaints();
+                    const dataStr = JSON.stringify(complaints, null, 2);
+                    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+                    
+                    const exportFileDefaultName = `complaints-${new Date().toISOString().split('T')[0]}.json`;
+                    
+                    const linkElement = document.createElement('a');
+                    linkElement.setAttribute('href', dataUri);
+                    linkElement.setAttribute('download', exportFileDefaultName);
+                    linkElement.click();
+                } catch (error) {
+                    console.error("Error exporting data:", error);
+                    alert("Failed to export data: " + error.message);
+                }
+            }
+
+            // Import data from JSON file
+            async function importData(file) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    
+                    reader.onload = async (event) => {
+                        try {
+                            const complaints = JSON.parse(event.target.result);
+                            
+                            if (!Array.isArray(complaints)) {
+                                throw new Error("Invalid data format");
+                            }
+                            
+                            // Clear existing data
+                            const transaction = db.transaction([STORE_NAME], 'readwrite');
+                            const store = transaction.objectStore(STORE_NAME);
+                            const clearRequest = store.clear();
+                            
+                            clearRequest.onsuccess = async () => {
+                                // Add all imported complaints
+                                for (const complaint of complaints) {
+                                    await addComplaint(complaint);
+                                }
+                                
+                                resolve();
+                                alert(`Successfully imported ${complaints.length} complaints`);
+                                loadAdminComplaints(); // Refresh the admin view
+                            };
+                            
+                            clearRequest.onerror = event => {
+                                reject(event.target.error);
+                            };
+                            
+                        } catch (error) {
+                            console.error("Error parsing imported file:", error);
+                            reject(error);
+                        }
+                    };
+                    
+                    reader.onerror = event => {
+                        reject(event.target.error);
+                    };
+                    
+                    reader.readAsText(file);
+                });
+            }
+
+            // Connection Status
+            const updateOnlineStatus = () => {
+                if (navigator.onLine) {
+                    connectionStatus.classList.remove('offline');
+                    connectionStatus.classList.add('online');
+                    connectionStatus.title = "Connected";
+                } else {
+                    connectionStatus.classList.remove('online');
+                    connectionStatus.classList.add('offline');
+                    connectionStatus.title = "Offline - Data stored locally";
+                }
+            };
+            window.addEventListener('online', updateOnlineStatus);
+            window.addEventListener('offline', updateOnlineStatus);
+            updateOnlineStatus();
+
+            // UI Toggling
+            const showView = (view) => {
+                userView.classList.add('hidden');
+                adminLoginView.classList.add('hidden');
+                adminPanelView.classList.add('hidden');
+                view.classList.remove('hidden');
+                adminLoginContainer.style.display = (view === userView) ? 'block' : 'none';
+            };
+
+            adminLoginBtn.addEventListener('click', () => showView(adminLoginView));
+            
+            // Admin Login
+            const adminLoginForm = document.getElementById('adminLoginForm');
+            const adminPasswordInput = document.getElementById('adminPassword');
+            const adminError = document.getElementById('adminError');
+
+            adminLoginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                if (adminPasswordInput.value === ADMIN_PASS) {
+                    adminError.classList.add('hidden');
+                    adminPasswordInput.value = '';
+                    showView(adminPanelView);
+                    loadAdminComplaints();
+                } else {
+                    adminError.classList.remove('hidden');
+                }
+            });
+
+            // Logout
+            const logoutBtn = document.getElementById('logoutBtn');
+            logoutBtn.addEventListener('click', () => {
+                showView(userView);
+                document.getElementById('complaintList').innerHTML = '<p class="text-center text-gray-400">Loading complaints...</p>';
+            });
+
+            // Export/Import
+            const exportBtn = document.getElementById('exportBtn');
+            const importInput = document.getElementById('importInput');
+            
+            exportBtn.addEventListener('click', exportData);
+            
+            importInput.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    importData(e.target.files[0]);
+                }
+            });
+
+            // Refresh Complaints
+            const refreshBtn = document.getElementById('refreshBtn');
+            refreshBtn.addEventListener('click', () => {
+                document.getElementById('complaintList').innerHTML = '<p class="text-center text-gray-400">Refreshing data...</p>';
+                loadAdminComplaints();
+            });
+
+            // Load Complaints for Admin
+            async function loadAdminComplaints() {
+                try {
+                    const complaints = await getAllComplaints();
+                    renderComplaints(complaints);
+                } catch (error) {
+                    console.error('Failed to load complaints:', error);
+                    document.getElementById('complaintList').innerHTML = `
+                        <p class="text-center text-red-400">Failed to load complaints. Please try again.</p>
+                    `;
+                }
+            }
+
+            function renderComplaints(complaints) {
+                const complaintList = document.getElementById('complaintList');
+                
+                if (!complaints || complaints.length === 0) {
+                    complaintList.innerHTML = '<p class="text-center text-gray-400">No complaints found.</p>';
+                    return;
+                }
+                
+                // Sort complaints by date (newest first)
+                complaints.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                
+                complaintList.innerHTML = complaints.map(c => `
+                    <div class="admin-complaint-card bg-gray-900 bg-opacity-50 p-4 rounded-lg status-${c.status.toLowerCase().replace(' ', '-')}">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-sm text-gray-400">Name (${c.occupation})</p>
+                                <input type="text" value="${c.name}" class="admin-editable admin-name w-full p-1 rounded-md text-white font-bold bg-transparent border-gray-600">
+                                
+                                <p class="text-sm text-gray-400 mt-2">Mobile</p>
+                                <input type="text" value="${c.mobile || ''}" class="admin-editable admin-mobile w-full p-1 rounded-md text-white bg-transparent border-gray-600">
+                                
+                                <p class="text-sm text-yellow-300 font-mono mt-2">${c.token}</p>
+                            </div>
+                            <span class="text-xs text-gray-400">${c.timestamp ? new Date(c.timestamp).toLocaleString() : 'N/A'}</span>
+                        </div>
+                        <div class="mt-2">
+                            <p class="font-semibold text-yellow-400">${c.complaintType}</p>
+                            <textarea class="admin-editable admin-complaint-text w-full p-1 rounded-md text-gray-300 mt-1 bg-transparent border-gray-600" rows="3">${c.complaintText}</textarea>
+                        </div>
+                        <div class="mt-4 flex items-center gap-4">
+                            <select data-id="${c.id}" class="admin-status-select w-full p-2 rounded-lg form-select text-sm">
+                                <option value="Pending" ${c.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                                <option value="In Progress" ${c.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
+                                <option value="Resolved" ${c.status === 'Resolved' ? 'selected' : ''}>Resolved</option>
+                            </select>
+                            <button data-id="${c.id}" class="admin-update-btn themed-button p-2 px-4 rounded-lg text-sm">Save</button>
+                        </div>
+                        <p class="update-success-msg text-green-400 text-xs mt-2 text-right hidden">Updated!</p>
+                    </div>
+                `).join('');
+            }
+
+            // Update Complaint
+            document.getElementById('complaintList').addEventListener('click', async (e) => {
+                if (e.target.classList.contains('admin-update-btn')) {
+                    const button = e.target;
+                    const complaintId = parseInt(button.dataset.id);
+                    const card = button.closest('.admin-complaint-card');
+                    
+                    const updatedData = {
+                        name: card.querySelector('.admin-name').value.trim(),
+                        mobile: card.querySelector('.admin-mobile').value.trim(),
+                        complaintText: card.querySelector('.admin-complaint-text').value.trim(),
+                        status: card.querySelector('.admin-status-select').value
+                    };
+
+                    try {
+                        button.textContent = 'Saving...';
+                        button.disabled = true;
+                        
+                        await updateComplaint(complaintId, updatedData);
+                        
+                        const successMsg = card.querySelector('.update-success-msg');
+                        successMsg.classList.remove('hidden');
+                        setTimeout(() => successMsg.classList.add('hidden'), 2500);
+
+                    } catch (err) {
+                        console.error("Error updating complaint: ", err);
+                        alert('Failed to update complaint. Please try again.');
+                    } finally {
+                        button.textContent = 'Save';
+                        button.disabled = false;
+                    }
+                }
+            });
+
+            // Submit Complaint
+            const complaintForm = document.getElementById('complaintForm');
+            const submitError = document.getElementById('submitError');
+
+            complaintForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const submitButton = e.target.querySelector('button[type="submit"]');
+                const submitText = document.getElementById('submit-text');
+                const submitSpinner = document.getElementById('submit-spinner');
+                
+                submitButton.disabled = true;
+                submitText.classList.add('hidden');
+                submitSpinner.classList.remove('hidden');
+                submitError.classList.add('hidden');
+
+                const token = `TKN-${Date.now().toString().slice(-6)}-${Math.random().toString(36).substr(2, 4).toUpperCase()}`;
+                
+                const complaintData = {
+                    name: document.getElementById('name').value.trim(),
+                    mobile: document.getElementById('mobile').value.trim(),
+                    occupation: document.getElementById('occupation').value,
+                    complaintType: document.getElementById('complaintType').value,
+                    complaintText: document.getElementById('complaintText').value.trim(),
+                    token: token,
+                    status: 'Pending',
+                    timestamp: new Date().toISOString()
+                };
+
+                try {
+                    await addComplaint(complaintData);
+                    const tokenDisplayThankYou = document.getElementById('tokenDisplayThankYou');
+                    tokenDisplayThankYou.textContent = token;
+                    
+                    mainContent.classList.add('hidden');
+                    thankYouView.classList.remove('hidden');
+                    
+                    complaintForm.reset();
+                } catch (error) {
+                    console.error("Error adding complaint: ", error);
+                    submitError.textContent = "Failed to submit complaint. Please try again.";
+                    submitError.classList.remove('hidden');
+                } finally {
+                    submitButton.disabled = false;
+                    submitText.classList.remove('hidden');
+                    submitSpinner.classList.add('hidden');
+                }
+            });
+
+            // Track Complaint
+            const trackForm = document.getElementById('trackForm');
+            const tokenInput = document.getElementById('tokenInput');
+            const trackingResult = document.getElementById('trackingResult');
+
+            trackForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const trackButton = e.target.querySelector('button[type="submit"]');
+                const tokenToTrack = tokenInput.value.trim();
+                if (!tokenToTrack) return;
+
+                trackButton.disabled = true;
+                trackingResult.innerHTML = `<p class="text-yellow-300">Searching...</p>`;
+                trackingResult.classList.remove('hidden');
+
+                try {
+                    const complaint = await getComplaintByToken(tokenToTrack);
+                    
+                    if (complaint) {
+                        const statusClass = complaint.status.toLowerCase().replace(' ', '-');
+                        trackingResult.innerHTML = `
+                            <div class="bg-gray-900 bg-opacity-50 p-4 rounded-lg status-${statusClass}">
+                                <p class="font-bold">Status: <span class="text-white">${complaint.status}</span></p>
+                                <p class="text-sm text-gray-400 mt-1">Token: ${complaint.token}</p>
+                                <p class="text-sm text-gray-400">Type: ${complaint.complaintType}</p>
+                                <p class="text-sm text-gray-400 mt-2">Submitted: ${new Date(complaint.timestamp).toLocaleDateString()}</p>
+                            </div>
+                        `;
+                    } else {
+                        trackingResult.innerHTML = `<p class="text-red-400">No complaint found with this token.</p>`;
+                    }
+                } catch (error) {
+                    console.error("Error tracking complaint:", error);
+                    trackingResult.innerHTML = `<p class="text-red-400">Error fetching status. Please try again.</p>`;
+                } finally {
+                    trackButton.disabled = false;
+                }
+            });
+
+            // Thank You View
+            document.getElementById('goBackBtn').addEventListener('click', () => {
+                thankYouView.classList.add('hidden');
+                mainContent.classList.remove('hidden');
+            });
+            
+            document.getElementById('copyTokenBtnThankYou').addEventListener('click', () => {
+                const tokenDisplayThankYou = document.getElementById('tokenDisplayThankYou');
+                const copySuccess = document.getElementById('copy-success-thank-you');
+                const textArea = document.createElement("textarea");
+                textArea.value = tokenDisplayThankYou.textContent;
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    copySuccess.classList.remove('hidden');
+                    setTimeout(() => copySuccess.classList.add('hidden'), 2000);
+                } catch (err) {
+                    console.error('Failed to copy text: ', err);
+                }
+                document.body.removeChild(textArea);
+            });
+
+            // Initialize the application
+            async function initApp() {
+                try {
+                    await initDatabase();
+                    console.log("Application initialized successfully");
+                    dataStatus.textContent = "Local Storage: Ready";
+                } catch (error) {
+                    console.error("Failed to initialize application:", error);
+                    dataStatus.textContent = "Local Storage: Error";
+                    alert("Failed to initialize the application. Some features may not work.");
+                }
+            }
+
+            // Start the app
+            initApp();
+        }
+
+        // Start the application
+        main();
+    </script>
+</body>
+</html>
