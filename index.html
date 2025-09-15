@@ -59,13 +59,13 @@
             cursor: not-allowed;
             opacity: 0.5;
         }
-        .form-input, .form-select {
+        .form-input, .form-select, .admin-editable {
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(197, 168, 128, 0.5);
             color: #fff;
             transition: all 0.3s ease;
         }
-        .form-input:focus, .form-select:focus {
+        .form-input:focus, .form-select:focus, .admin-editable:focus {
             outline: none;
             box-shadow: 0 0 15px rgba(197, 168, 128, 0.7);
             border-color: var(--primary-gold);
@@ -296,23 +296,25 @@
                 }
                 
                 const complaints = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                // Sort by timestamp, newest first
                 complaints.sort((a, b) => (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0));
 
-
                 complaintList.innerHTML = complaints.map(c => `
-                    <div class="bg-gray-900 bg-opacity-50 p-4 rounded-lg status-${c.status.toLowerCase().replace(' ', '-')}">
+                    <div class="admin-complaint-card bg-gray-900 bg-opacity-50 p-4 rounded-lg status-${c.status.toLowerCase().replace(' ', '-')}">
                         <div class="flex justify-between items-start">
                             <div>
-                                <p class="font-bold text-white">${c.name} <span class="text-sm font-normal text-gray-400">(${c.occupation})</span></p>
-                                <p class="text-sm text-gray-300">${c.mobile || ''}</p>
-                                <p class="text-sm text-yellow-300 font-mono mt-1">${c.token}</p>
+                                <p class="text-sm text-gray-400">Name (${c.occupation})</p>
+                                <input type="text" value="${c.name}" class="admin-editable admin-name w-full p-1 rounded-md text-white font-bold bg-transparent border-gray-600">
+                                
+                                <p class="text-sm text-gray-400 mt-2">Mobile</p>
+                                <input type="text" value="${c.mobile || ''}" class="admin-editable admin-mobile w-full p-1 rounded-md text-white bg-transparent border-gray-600">
+                                
+                                <p class="text-sm text-yellow-300 font-mono mt-2">${c.token}</p>
                             </div>
                             <span class="text-xs text-gray-400">${c.timestamp ? new Date(c.timestamp.seconds * 1000).toLocaleString() : 'N/A'}</span>
                         </div>
                         <div class="mt-2">
                             <p class="font-semibold text-yellow-400">${c.complaintType}</p>
-                            <p class="text-gray-300 mt-1">${c.complaintText}</p>
+                            <textarea class="admin-editable admin-complaint-text w-full p-1 rounded-md text-gray-300 mt-1 bg-transparent border-gray-600" rows="3">${c.complaintText}</textarea>
                         </div>
                         <div class="mt-4 flex items-center gap-4">
                             <select data-id="${c.id}" class="admin-status-select w-full p-2 rounded-lg form-select text-sm">
@@ -320,7 +322,9 @@
                                 <option value="In Progress" ${c.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
                                 <option value="Resolved" ${c.status === 'Resolved' ? 'selected' : ''}>Resolved</option>
                             </select>
+                            <button data-id="${c.id}" class="admin-update-btn themed-button p-2 px-4 rounded-lg text-sm">Save</button>
                         </div>
+                         <p class="update-success-msg text-green-400 text-xs mt-2 text-right hidden">Updated!</p>
                     </div>
                 `).join('');
             });
@@ -333,9 +337,39 @@
                 const docRef = doc(db, complaintsCollectionPath, docId);
                 try {
                     await updateDoc(docRef, { status: newStatus });
-                    console.log(`Status updated for ${docId}`);
                 } catch(err) {
                     console.error("Error updating status: ", err);
+                }
+            }
+        });
+
+        complaintList.addEventListener('click', async (e) => {
+            if (e.target.classList.contains('admin-update-btn')) {
+                const button = e.target;
+                const docId = button.dataset.id;
+                const card = button.closest('.admin-complaint-card');
+                
+                const updatedData = {
+                    name: card.querySelector('.admin-name').value.trim(),
+                    mobile: card.querySelector('.admin-mobile').value.trim(),
+                    complaintText: card.querySelector('.admin-complaint-text').value.trim()
+                };
+
+                const docRef = doc(db, complaintsCollectionPath, docId);
+                try {
+                    button.textContent = 'Saving...';
+                    button.disabled = true;
+                    await updateDoc(docRef, updatedData);
+                    
+                    const successMsg = card.querySelector('.update-success-msg');
+                    successMsg.classList.remove('hidden');
+                    setTimeout(() => successMsg.classList.add('hidden'), 2500);
+
+                } catch (err) {
+                    console.error("Error updating document: ", err);
+                } finally {
+                    button.textContent = 'Save';
+                    button.disabled = false;
                 }
             }
         });
@@ -398,7 +432,6 @@
         document.getElementById('copyTokenBtnThankYou').addEventListener('click', () => {
             const tokenDisplayThankYou = document.getElementById('tokenDisplayThankYou');
             const copySuccess = document.getElementById('copy-success-thank-you');
-            // Using document.execCommand as a fallback for iframe environments
             const textArea = document.createElement("textarea");
             textArea.value = tokenDisplayThankYou.textContent;
             document.body.appendChild(textArea);
