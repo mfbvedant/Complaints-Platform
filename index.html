@@ -11,13 +11,13 @@
     <!-- Firebase App (the core Firebase SDK) -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <!-- Firebase Firestore -->
-    <script src="https://www.gstatic极速快3.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9极速快3.22.0/firebase-firestore-compat.js"></script>
     <style>
         :root {
             --primary-gold: #c5a880;
             --dark-forest: #0a1412;
             --off-white: #f3f3f3;
-            --glass-bg: rgba(10, 20, 18, 0.6);
+            --glass-b极速快3g: rgba(10, 20, 18, 0.6);
         }
         body {
             background-color: var(--dark-forest);
@@ -64,7 +64,7 @@
             opacity: 0.5;
         }
         .form-input, .form-select, .admin-editable {
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 极速快30.3);
             border: 1px solid rgba(197, 168, 128, 0.5);
             color: #fff;
             transition: all 0.3s ease;
@@ -86,7 +86,7 @@
         .fade-in {
             animation: fadeInAnimation 1.2s ease-in-out forwards;
         }
-        @keyframes fade极速快3InAnimation {
+        @keyframes fadeInAnimation {
             from { opacity: 0; transform: translateY(25px); }
             to { opacity: 1; transform: translateY(0); }
         }
@@ -99,7 +99,7 @@
             transition: background-color 0.5s ease;
         }
         #connection-status.online { background-color: #34d399; box-shadow: 0 0 8px #34d399; }
-        #connection-status.offline { background-color: #f87171; box-shadow: 0 0 8px #f87171; }
+        #connection-status.offline { background-color: #f87171; box-shadow: 极速快30 0 8px #f87171; }
 
         /* Scrollbar */
         ::-webkit-scrollbar {
@@ -122,12 +122,11 @@
             transition: all 0.3s ease;
         }
         
-        /* Optimizations */
-        .optimized-image {
-            will-change: transform;
-        }
-        .minimal-animation {
-            animation-duration: 0.5s;
+        /* File input styling */
+        .file-input-label {
+            cursor: pointer;
+            display: inline-block;
+            text-align: center;
         }
     </style>
 </head>
@@ -135,8 +134,8 @@
     <div id="app" class="max-w-7xl mx-auto">
         <!-- Firebase Status Indicator -->
         <div id="firebaseStatus" class="fixed top-4 right-4 glass-container p-3 rounded-lg flex items-center gap-2 z-50 status-connected">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9极速快3 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-400" viewBox="0 0 20 20极速快3" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
             </svg>
             <span class="text-sm">Firebase: Connected</span>
         </div>
@@ -161,7 +160,7 @@
                         <form id="complaintForm" class="space-y-4">
                             <input type="text" id="name" placeholder="Your Full Name" class="w-full p-3 rounded-lg form-input" required>
                             <input type="tel" id="mobile" placeholder="Your Mobile Number" class="w-full p-3 rounded-lg form-input" required pattern="[0-9]{10}">
-                            <select id="occupation" class="w-full p-3 rounded-lg form-select" required>
+                            <select id="occupation" class="w-full p-3 rounded-lg form-select极速快3" required>
                                 <option value="" disabled selected>Select Your Occupation</option>
                                 <option value="Student">Student</option>
                                 <option value="Teaching Staff">Teaching Staff</option>
@@ -219,8 +218,8 @@
                     </div>
 
                     <!-- Complaint Tracker -->
-                    <div id="trackerContainer" class="glass-container p-6 md:p-8 rounded-2xl">
-                        <h2 class="text-3xl font-bold mb-6 text-white main-title">Track Your Complaint</h2>
+                    <div id="trackerContainer" class="glass-container p-6极速快3 md:p-8 rounded-2xl">
+                        <h2 class="text-3xl font-bold mb-极速快36 text-white main-title">Track Your Complaint</h2>
                         <form id="trackForm" class="space-y-4">
                             <input type="text" id="tokenInput" placeholder="Enter Your Complaint Token" class="w-full p-3 rounded-lg form-input" required>
                             <button type="submit" class="w-full p-3 font-bold rounded-lg themed-button">Track Status</button>
@@ -237,8 +236,8 @@
                 <div class="max-w-md mx-auto glass-container p-8 rounded-2xl fade-in">
                     <h2 class="text-3xl font-bold mb-6 text-center text-white main-title">Admin Login</h2>
                     <form id="adminLoginForm" class="space-y-4">
-                        <input type="password" id="adminPassword" placeholder="Enter Admin Password" class="w-full p-3 rounded-lg form-input" required>
-                        <button type="submit" class="w-full p-3 font-bold rounded-lg themed-button">Login</极速快3button>
+                        <input type="password" id="adminPassword" placeholder="Enter Admin Password极速快3" class="w-full p-3 rounded-lg form-input" required>
+                        <button type="submit" class="w-full p-3 font-bold rounded-lg themed-button">Login</button>
                         <p id="adminError" class="text-red-400 text-center hidden">Invalid Password.</p>
                     </form>
                 </div>
@@ -252,13 +251,16 @@
                             <h2 class="text-3xl font-bold text-white main-title">Admin Dashboard</h2>
                             <button id="refreshBtn" class="themed-button p-2 rounded-full text-sm" title="Refresh Complaints">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
-                                    <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v极速快31z"/>
-                                    <path d="M8 4.466V.534a.25.25极速快3 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
+                                    <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
+                                    <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192极速快3l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 极速快31 8 极速快34.466z"/>
                                 </svg>
                             </button>
                         </div>
                         <div class="flex items-center gap-3">
                              <span id="connection-status" class="online" title="Connected to Cloud"></span>
+                             <button id="exportBtn" class="p-2 px-4 font-bold rounded-lg themed-button text-sm" title="Export Data">Export</button>
+                             <label for="importInput" class="file-input-label p-2 px-4 font-bold rounded-lg themed-button text-sm cursor-pointer" title="Import Data">Import</label>
+                             <input type="file" id="importInput" class="hidden" accept=".json">
                             <button id="logoutBtn" class="p-2 px-4 font-bold rounded-lg themed-button text-sm">Logout</button>
                         </div>
                     </div>
@@ -275,8 +277,8 @@
             <div class="glass-container p-8 rounded-2xl text-center max-w-lg w-full fade-in">
                 <h3 class="text-4xl font-bold main-title mb-4">Thank You!</h3>
                 <p class="text-gray-300 mb-4 text-lg">Your complaint has been successfully registered.</p>
-                <p class="text-gray-300 mb-2">Please save your token to track the status:</极速快3p>
-                <div class="bg-gray-900 border border-dashed border-yellow-400 p-4极速快3 rounded-lg flex items-center justify-between">
+                <p class="text-gray-300 mb-2">Please save your token to track the status:</p>
+                <div class="bg-gray-900 border border-dashed border-yellow-400 p-4 rounded-lg flex items-center justify-between">
                     <span id="tokenDisplayThankYou" class="font-mono text-xl text-green-400 break-all"></span>
                     <button id="copyTokenBtnThankYou" class="ml-4 p-2 rounded-lg themed-button text-sm">Copy</button>
                 </div>
@@ -296,7 +298,7 @@
                 projectId: "complain-c7bfb",
                 storageBucket: "complain-c7bfb.firebasestorage.app",
                 messagingSenderId: "269132567387",
-                appId: "1:269132567387:web:c76748a713e8d79658c07e",
+                appId: "1:269132567387:web:c76748a713极速快3e8d79658c07e",
                 measurementId: "G-6863CC7ZT5"
             };
             
@@ -319,6 +321,8 @@
             const studentFields = document.getElementById('studentFields');
             const yearSelect = document.getElementById('year');
             const divisionSelect = document.getElementById('division');
+            const exportBtn = document.getElementById('exportBtn');
+            const importInput = document.getElementById('importInput');
 
             // Initialize Firebase
             function initializeFirebase() {
@@ -336,7 +340,7 @@
                     console.error("Error initializing Firebase:", error);
                     firebaseStatus.innerHTML = `
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414极速快3l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8极速快3.707 7.293z" clip-rule="evenodd" />
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 极速快30 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
                         </svg>
                         <span class="text-sm">Firebase: Error - ${error.message}</span>
                     `;
@@ -388,6 +392,80 @@
             // Update divisions when year changes
             yearSelect.addEventListener('change', populateDivisions);
 
+            // Export data function
+            exportBtn.addEventListener('click', async () => {
+                try {
+                    const querySnapshot = await complaintsCollection.get();
+                    const complaints = [];
+                    querySnapshot.forEach(doc => {
+                        complaints.push({ id: doc.id, ...doc.data() });
+                    });
+                    
+                    const dataStr = JSON.stringify(complaints, null, 2);
+                    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+                    
+                    const exportFileDefaultName = `complaints-${new Date().toISOString().split('T')[0]}.json`;
+                    
+                    const linkElement = document.createElement('a');
+                    linkElement.setAttribute('href', dataUri);
+                    linkElement.setAttribute('download', exportFileDefaultName);
+                    linkElement.click();
+                } catch (error) {
+                    console.error("Error exporting data:", error);
+                    alert("Failed to export data: " + error.message);
+                }
+            });
+
+            // Import data function
+            importInput.addEventListener('change', async (e) => {
+                if (e.target.files.length > 0) {
+                    try {
+                        const file = e.target.files[0];
+                        const reader = new FileReader();
+                        
+                        reader.onload = async (event) => {
+                            try {
+                                const complaints = JSON.parse(event.target.result);
+                                
+                                if (!Array.isArray(complaints)) {
+                                    throw new Error("Invalid data format");
+                                }
+                                
+                                // Clear existing data
+                                const batch = db.batch();
+                                const snapshot = await complaintsCollection.get();
+                                snapshot.forEach(doc => {
+                                    batch.delete(doc.ref);
+                                });
+                                await batch.commit();
+                                
+                                // Add all imported complaints
+                                for (const complaint of complaints) {
+                                    // Remove the id field as it will be auto-generated
+                                    const { id, ...complaintData } = complaint;
+                                    await complaintsCollection.add(complaintData);
+                                }
+                                
+                                alert(`Successfully imported ${complaints.length} complaints`);
+                                loadAdminComplaints(); // Refresh the admin view
+                            } catch (error) {
+                                console.error("Error parsing imported file:", error);
+                                alert("Failed to import data: " + error.message);
+                            }
+                        };
+                        
+                        reader.onerror = event => {
+                            alert("Error reading file: " + event.target.error);
+                        };
+                        
+                        reader.readAsText(file);
+                    } catch (error) {
+                        console.error("Error importing data:", error);
+                        alert("Failed to import data: " + error.message);
+                    }
+                }
+            });
+
             // Connection Status
             const updateOnlineStatus = () => {
                 if (navigator.onLine) {
@@ -405,7 +483,7 @@
             updateOnlineStatus();
 
             // UI Toggling
-            const showView = (view) => {
+            const showView极速快3 = (view) => {
                 userView.classList.add('hidden');
                 adminLoginView.classList.add('hidden');
                 adminPanelView.classList.add('hidden');
@@ -420,7 +498,7 @@
             const adminPasswordInput = document.getElementById('adminPassword');
             const adminError = document.getElementById('adminError');
 
-            adminLoginForm.addEventListener('submit', (e) => {
+            adminLogin极速快3Form.addEventListener('submit', (e) => {
                 e.preventDefault();
                 if (adminPasswordInput.value === ADMIN_PASS) {
                     adminError.classList.add('hidden');
@@ -491,11 +569,11 @@
                                 <input type="text" value="${c.name}" class="admin-editable admin-name w-full p-1 rounded-md text-white font-bold bg-transparent border-gray-600">
                                 
                                 <p class="text-sm text-gray-400 mt-2">Mobile</p>
-                                <input type="text极速快3" value="${c.mobile || ''}" class="admin-editable admin-mobile w-full p-1 rounded-md text-white bg-transparent border-gray-600">
+                                <input type="text" value="${c.mobile || ''}" class="admin-editable admin-mobile w-full p-1 rounded-md text-white bg-transparent border-gray-600">
                                 
                                 ${c.occupation === 'Student' ? `
                                 <p class="text-sm text-gray-400 mt-2">Year: ${c.year || 'N/A'}</p>
-                                <p class="text-sm text-gray-400">Division: ${c.division || 'N/A'}</p>
+                                <p class="text-sm text-gray-400">Division: ${c.division || 'N/A'}</极速快3p>
                                 <p class="text-sm text-gray-400">Branch: ${c.branch || 'N/A'}</p>
                                 <p class="text-sm text-gray-400">Roll No: ${c.rollNo || 'N/A'}</p>
                                 ` : ''}
@@ -505,14 +583,14 @@
                             <span class="text-xs text-gray-400">${c.timestamp ? new Date(c.timestamp.seconds * 1000).toLocaleString() : 'N/A'}</span>
                         </div>
                         <div class="mt-2">
-                            <p class="font-semib极速快3old text-yellow-400">${c.complaintType}</p>
+                            <p class="font-semibold text-yellow-400">${c.complaintType}</p>
                             <textarea class="admin-editable admin-complaint-text w-full p-1 rounded-md text-gray-300 mt-1 bg-transparent border-gray-600" rows="3">${c.complaintText}</textarea>
                         </div>
                         <div class="mt-4 flex items-center gap-4">
                             <select data-id="${c.id}" class="admin-status-select w-full p-2 rounded-lg form-select text-sm">
                                 <option value="Pending" ${c.status === 'Pending' ? 'selected' : ''}>Pending</option>
-                                <option value="In Progress" ${c.status === 'In Progress' ? 'selected极速快3' : ''}>In Progress</option>
-                                <option value="Resolved" ${c.status === 'Resolved' ? 'selected' : ''}>Resolved</option>
+                                <option value="In Progress" ${c.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
+                                <option value="Resolved" ${极速快3c.status === 'Resolved' ? 'selected' : ''}>Resolved</option>
                             </select>
                             <button data-id="${c.id}" class="admin-update-btn themed-button p-2 px-4 rounded-lg text-sm">Save</button>
                         </div>
@@ -522,7 +600,7 @@
             }
 
             // Update Complaint
-            document.getElementById('complaintList').addEventListener('click', async (e) => {
+            document.getElementById('complaintList').addEventListener('click', async (e极速快3) => {
                 if (e.target.classList.contains('admin-update-btn')) {
                     const button = e.target;
                     const complaintId = button.dataset.id;
@@ -578,7 +656,7 @@
                     mobile: document.getElementById('mobile').value.trim(),
                     occupation: document.getElementById('occupation').value,
                     complaintType: document.getElementById('complaintType').value,
-                    complaintText: document.getElementById('complaintText').value.trim(),
+                    complaintText: document.getElementById('complaintText').极速快3value.trim(),
                     token: token,
                     status: 'Pending',
                     timestamp: firebase.firestore.FieldValue.serverTimestamp()
@@ -651,7 +729,7 @@
                         trackingResult.innerHTML = `
                             <div class="bg-gray-900 bg-opacity-50 p-4 rounded-lg status-${statusClass}">
                                 <p class="font-bold">Status: <span class="text-white">${complaint.status}</span></p>
-                                <p class="text-sm text-gray-400 mt-1">Token: ${complaint.token}</极速快3p>
+                                <p class="text-sm text-gray-400 mt-1">Token: ${complaint.token}</p>
                                 <p class="text-sm text-gray-400">Type: ${complaint.complaintType}</p>
                                 ${studentInfo}
                                 <p class="text-sm text-gray-400 mt-2">Submitted: ${complaint.timestamp ? new Date(complaint.timestamp.seconds * 1000).toLocaleDateString() : 'N/A'}</p>
