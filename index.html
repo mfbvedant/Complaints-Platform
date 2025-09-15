@@ -3,11 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Self-Hosted Complaint System</title>
+    <title>Cloud-Based Complaint System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Firebase App (the core Firebase SDK) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <!-- Firebase Firestore -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <style>
         :root {
             --primary-gold: #c5a880;
@@ -111,10 +115,31 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #e6c599;
         }
+        
+        /* Setup Wizard */
+        .setup-step {
+            display: none;
+        }
+        .setup-step.active {
+            display: block;
+        }
+        .firebase-config-input {
+            font-family: monospace;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
     </style>
 </head>
 <body class="min-h-screen p-4">
     <div id="app" class="max-w-7xl mx-auto">
+        <!-- Firebase Configuration Loaded Message -->
+        <div id="configSuccess" class="fixed top-4 right-4 glass-container p-3 rounded-lg flex items-center gap-2 z-50">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+            </svg>
+            <span class="text-sm">Firebase Connected</span>
+        </div>
+
         <!-- Header -->
         <header class="relative text-center py-8 fade-in">
             <div id="adminLoginContainer" class="absolute top-8 right-4">
@@ -193,20 +218,12 @@
                         <div class="flex items-center gap-4">
                             <h2 class="text-3xl font-bold text-white main-title">Admin Dashboard</h2>
                             <button id="refreshBtn" class="themed-button p-2 rounded-full text-sm" title="Refresh Complaints">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/><path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 极速快3 1 1 8 2v1z"/><path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.极速快3 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/></svg>
                             </button>
                         </div>
                         <div class="flex items-center gap-3">
-                            <div class="flex flex-col items-end">
-                                <span id="connection-status" title="Connection Status"></span>
-                                <span class="text-xs text-gray-400 mt-1" id="dataStatus">Local Storage</span>
-                            </div>
-                            <div class="flex gap-2">
-                                <button id="exportBtn" class="p-2 px-4 font-bold rounded-lg themed-button text-sm" title="Export Data">Export</button>
-                                <label for="importInput" class="p-2 px-4 font-bold rounded-lg themed-button text-sm cursor-pointer" title="Import Data">Import</label>
-                                <input type="file" id="importInput" class="hidden" accept=".json">
-                                <button id="logoutBtn" class="p-2 px-4 font-bold rounded-lg themed-button text-sm">Logout</button>
-                            </div>
+                             <span id="connection-status" title="Connection Status"></span>
+                            <button id="logoutBtn" class="p-2 px-4 font-bold rounded-lg themed-button text-sm">Logout</button>
                         </div>
                     </div>
                     <div id="complaintList" class="space-y-4 max-h-[60vh] overflow-y-auto pr-2">
@@ -220,12 +237,12 @@
         <!-- Thank You View -->
         <div id="thankYouView" class="fixed inset-0 bg-dark-forest bg-opacity-95 flex items-center justify-center hidden z-50 p-4">
             <div class="glass-container p-8 rounded-2xl text-center max-w-lg w-full fade-in">
-                <h3 class="text-4xl font-bold main-title mb-4">Thank You!</h3>
+                <h极速快3 class="text-4xl font-bold main-title mb-4">Thank You!</h3>
                 <p class="text-gray-300 mb-4 text-lg">Your complaint has been successfully registered.</p>
                 <p class="text-gray-300 mb-2">Please save your token to track the status:</p>
                 <div class="bg-gray-900 border border-dashed border-yellow-400 p-4 rounded-lg flex items-center justify-between">
                     <span id="tokenDisplayThankYou" class="font-mono text-xl text-green-400 break-all"></span>
-                    <button id="copyTokenBtnThankYou" class="ml-4 p-2 rounded-lg themed-button text-sm">Copy</button>
+                    <button id="copyTokenBtnThankYou" class="ml-4 p-2 rounded-lg themed-button text-sm">极速快3y</button>
                 </div>
                 <p id="copy-success-thank-you" class="text-green-400 mt-2 hidden">Copied!</p>
                 <button id="goBackBtn" class="mt-8 w-full p-3 font-bold rounded-lg themed-button">Lodge Another Complaint</button>
@@ -236,11 +253,20 @@
     <script>
         // Main application
         function main() {
-            // Database setup
+            // Firebase configuration from your project
+            const firebaseConfig = {
+                apiKey: "AIzaSyCHkGv6JWjgNq_V0Bs-AGtaGMwTAOvjCU0",
+                authDomain: "complain-c7bfb.firebaseapp.com",
+                projectId: "complain-c7bfb",
+                storageBucket: "complain-c7bfb.firebasestorage.app",
+                messagingSenderId: "269132567387",
+                appId: "1:269132567387:web:c76748a713e8d79658c07e",
+                measurementId: "G-6863CC7ZT5"
+            };
+            
+            // Firebase variables
             let db;
-            const DB_NAME = 'ComplaintSystemDB';
-            const DB_VERSION = 1;
-            const STORE_NAME = 'complaints';
+            let complaintsCollection;
             const ADMIN_PASS = "admin123"; // Change this in production
             
             // DOM Elements
@@ -252,198 +278,31 @@
             const mainContent = document.getElementById('mainContent');
             const thankYouView = document.getElementById('thankYouView');
             const connectionStatus = document.getElementById('connection-status');
-            const dataStatus = document.getElementById('dataStatus');
+            const configSuccess = document.getElementById('configSuccess');
 
-            // Initialize database
-            function initDatabase() {
-                return new Promise((resolve, reject) => {
-                    const request = indexedDB.open(DB_NAME, DB_VERSION);
-                    
-                    request.onerror = event => {
-                        console.error("IndexedDB error:", event.target.error);
-                        reject(event.target.error);
-                    };
-                    
-                    request.onsuccess = event => {
-                        db = event.target.result;
-                        console.log("IndexedDB initialized successfully");
-                        resolve(db);
-                    };
-                    
-                    request.onupgradeneeded = event => {
-                        const db = event.target.result;
-                        
-                        // Create the complaints object store if it doesn't exist
-                        if (!db.objectStoreNames.contains(STORE_NAME)) {
-                            const store = db.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
-                            store.createIndex('token', 'token', { unique: true });
-                            store.createIndex('status', 'status', { unique: false });
-                            store.createIndex('timestamp', 'timestamp', { unique: false });
-                            console.log("Object store created successfully");
-                        }
-                    };
-                });
-            }
-
-            // Add a complaint to the database
-            async function addComplaint(complaintData) {
-                return new Promise((resolve, reject) => {
-                    const transaction = db.transaction([STORE_NAME], 'readwrite');
-                    const store = transaction.objectStore(STORE_NAME);
-                    
-                    const request = store.add(complaintData);
-                    
-                    request.onsuccess = () => {
-                        console.log("Complaint added successfully");
-                        resolve(request.result);
-                    };
-                    
-                    request.onerror = event => {
-                        console.error("Error adding complaint:", event.target.error);
-                        reject(event.target.error);
-                    };
-                });
-            }
-
-            // Get all complaints from the database
-            async function getAllComplaints() {
-                return new Promise((resolve, reject) => {
-                    const transaction = db.transaction([STORE_NAME], 'readonly');
-                    const store = transaction.objectStore(STORE_NAME);
-                    const request = store.getAll();
-                    
-                    request.onsuccess = () => {
-                        resolve(request.result);
-                    };
-                    
-                    request.onerror = event => {
-                        console.error("Error getting complaints:", event.target.error);
-                        reject(event.target.error);
-                    };
-                });
-            }
-
-            // Get a complaint by token
-            async function getComplaintByToken(token) {
-                return new Promise((resolve, reject) => {
-                    const transaction = db.transaction([STORE_NAME], 'readonly');
-                    const store = transaction.objectStore(STORE_NAME);
-                    const index = store.index('token');
-                    const request = index.get(token);
-                    
-                    request.onsuccess = () => {
-                        resolve(request.result);
-                    };
-                    
-                    request.onerror = event => {
-                        console.error("Error getting complaint by token:", event.target.error);
-                        reject(event.target.error);
-                    };
-                });
-            }
-
-            // Update a complaint in the database
-            async function updateComplaint(id, updates) {
-                return new Promise(async (resolve, reject) => {
-                    // First get the current complaint
-                    const transaction = db.transaction([STORE_NAME], 'readwrite');
-                    const store = transaction.objectStore(STORE_NAME);
-                    
-                    const getRequest = store.get(id);
-                    
-                    getRequest.onsuccess = () => {
-                        const complaint = getRequest.result;
-                        if (!complaint) {
-                            reject(new Error("Complaint not found"));
-                            return;
-                        }
-                        
-                        // Update the complaint
-                        const updatedComplaint = { ...complaint, ...updates };
-                        
-                        const putRequest = store.put(updatedComplaint);
-                        
-                        putRequest.onsuccess = () => {
-                            resolve(updatedComplaint);
-                        };
-                        
-                        putRequest.onerror = event => {
-                            console.error("Error updating complaint:", event.target.error);
-                            reject(event.target.error);
-                        };
-                    };
-                    
-                    getRequest.onerror = event => {
-                        console.error("Error getting complaint for update:", event.target.error);
-                        reject(event.target.error);
-                    };
-                });
-            }
-
-            // Export all data as JSON
-            async function exportData() {
+            // Initialize Firebase
+            function initializeFirebase() {
                 try {
-                    const complaints = await getAllComplaints();
-                    const dataStr = JSON.stringify(complaints, null, 2);
-                    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+                    // Initialize Firebase
+                    firebase.initializeApp(firebaseConfig);
+                    console.log("Firebase initialized successfully with your configuration");
                     
-                    const exportFileDefaultName = `complaints-${new Date().toISOString().split('T')[0]}.json`;
+                    // Initialize Firestore
+                    db = firebase.firestore();
+                    complaintsCollection = db.collection('complaints');
                     
-                    const linkElement = document.createElement('a');
-                    linkElement.setAttribute('href', dataUri);
-                    linkElement.setAttribute('download', exportFileDefaultName);
-                    linkElement.click();
+                    // Show success message
+                    configSuccess.classList.remove('hidden');
+                    setTimeout(() => {
+                        configSuccess.classList.add('hidden');
+                    }, 3000);
+                    
+                    return true;
                 } catch (error) {
-                    console.error("Error exporting data:", error);
-                    alert("Failed to export data: " + error.message);
+                    console.error("Error initializing Firebase:", error);
+                    alert("Failed to initialize Firebase. Please check your configuration.");
+                    return false;
                 }
-            }
-
-            // Import data from JSON file
-            async function importData(file) {
-                return new Promise((resolve, reject) => {
-                    const reader = new FileReader();
-                    
-                    reader.onload = async (event) => {
-                        try {
-                            const complaints = JSON.parse(event.target.result);
-                            
-                            if (!Array.isArray(complaints)) {
-                                throw new Error("Invalid data format");
-                            }
-                            
-                            // Clear existing data
-                            const transaction = db.transaction([STORE_NAME], 'readwrite');
-                            const store = transaction.objectStore(STORE_NAME);
-                            const clearRequest = store.clear();
-                            
-                            clearRequest.onsuccess = async () => {
-                                // Add all imported complaints
-                                for (const complaint of complaints) {
-                                    await addComplaint(complaint);
-                                }
-                                
-                                resolve();
-                                alert(`Successfully imported ${complaints.length} complaints`);
-                                loadAdminComplaints(); // Refresh the admin view
-                            };
-                            
-                            clearRequest.onerror = event => {
-                                reject(event.target.error);
-                            };
-                            
-                        } catch (error) {
-                            console.error("Error parsing imported file:", error);
-                            reject(error);
-                        }
-                    };
-                    
-                    reader.onerror = event => {
-                        reject(event.target.error);
-                    };
-                    
-                    reader.readAsText(file);
-                });
             }
 
             // Connection Status
@@ -451,11 +310,11 @@
                 if (navigator.onLine) {
                     connectionStatus.classList.remove('offline');
                     connectionStatus.classList.add('online');
-                    connectionStatus.title = "Connected";
+                    connectionStatus.title = "Connected to Cloud";
                 } else {
                     connectionStatus.classList.remove('online');
                     connectionStatus.classList.add('offline');
-                    connectionStatus.title = "Offline - Data stored locally";
+                    connectionStatus.title = "Offline - Data will sync when online";
                 }
             };
             window.addEventListener('online', updateOnlineStatus);
@@ -466,7 +325,7 @@
             const showView = (view) => {
                 userView.classList.add('hidden');
                 adminLoginView.classList.add('hidden');
-                adminPanelView.classList.add('hidden');
+                adminPanel极速快3w.classList.add('hidden');
                 view.classList.remove('hidden');
                 adminLoginContainer.style.display = (view === userView) ? 'block' : 'none';
             };
@@ -497,18 +356,6 @@
                 document.getElementById('complaintList').innerHTML = '<p class="text-center text-gray-400">Loading complaints...</p>';
             });
 
-            // Export/Import
-            const exportBtn = document.getElementById('exportBtn');
-            const importInput = document.getElementById('importInput');
-            
-            exportBtn.addEventListener('click', exportData);
-            
-            importInput.addEventListener('change', (e) => {
-                if (e.target.files.length > 0) {
-                    importData(e.target.files[0]);
-                }
-            });
-
             // Refresh Complaints
             const refreshBtn = document.getElementById('refreshBtn');
             refreshBtn.addEventListener('click', () => {
@@ -517,16 +364,32 @@
             });
 
             // Load Complaints for Admin
-            async function loadAdminComplaints() {
-                try {
-                    const complaints = await getAllComplaints();
+            function loadAdminComplaints() {
+                if (!complaintsCollection) {
+                    document.getElementById('complaintList').innerHTML = '<p class="text-center text-red-400">Firebase not configured properly.</p>';
+                    return;
+                }
+                
+                complaintsCollection.orderBy('timestamp', 'desc').get()
+                .then((querySnapshot) => {
+                    if (querySnapshot.empty) {
+                        document.getElementById('complaintList').innerHTML = '<极速快3 class="text-center text-gray-400">No complaints found.</p>';
+                        return;
+                    }
+                    
+                    const complaints = [];
+                    querySnapshot.forEach((doc) => {
+                        complaints.push({ id: doc.id, ...doc.data() });
+                    });
+                    
                     renderComplaints(complaints);
-                } catch (error) {
+                })
+                .catch((error) => {
                     console.error('Failed to load complaints:', error);
                     document.getElementById('complaintList').innerHTML = `
                         <p class="text-center text-red-400">Failed to load complaints. Please try again.</p>
                     `;
-                }
+                });
             }
 
             function renderComplaints(complaints) {
@@ -536,9 +399,6 @@
                     complaintList.innerHTML = '<p class="text-center text-gray-400">No complaints found.</p>';
                     return;
                 }
-                
-                // Sort complaints by date (newest first)
-                complaints.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
                 
                 complaintList.innerHTML = complaints.map(c => `
                     <div class="admin-complaint-card bg-gray-900 bg-opacity-50 p-4 rounded-lg status-${c.status.toLowerCase().replace(' ', '-')}">
@@ -552,7 +412,7 @@
                                 
                                 <p class="text-sm text-yellow-300 font-mono mt-2">${c.token}</p>
                             </div>
-                            <span class="text-xs text-gray-400">${c.timestamp ? new Date(c.timestamp).toLocaleString() : 'N/A'}</span>
+                            <span class="text-xs text-gray-400">${c.timestamp ? new Date(c.timestamp.seconds * 1000).toLocaleString() : 'N/A'}</span>
                         </div>
                         <div class="mt-2">
                             <p class="font-semibold text-yellow-400">${c.complaintType}</p>
@@ -575,7 +435,7 @@
             document.getElementById('complaintList').addEventListener('click', async (e) => {
                 if (e.target.classList.contains('admin-update-btn')) {
                     const button = e.target;
-                    const complaintId = parseInt(button.dataset.id);
+                    const complaintId = button.dataset.id;
                     const card = button.closest('.admin-complaint-card');
                     
                     const updatedData = {
@@ -589,7 +449,7 @@
                         button.textContent = 'Saving...';
                         button.disabled = true;
                         
-                        await updateComplaint(complaintId, updatedData);
+                        await complaintsCollection.doc(complaintId).update(updatedData);
                         
                         const successMsg = card.querySelector('.update-success-msg');
                         successMsg.classList.remove('hidden');
@@ -630,11 +490,11 @@
                     complaintText: document.getElementById('complaintText').value.trim(),
                     token: token,
                     status: 'Pending',
-                    timestamp: new Date().toISOString()
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 };
 
                 try {
-                    await addComplaint(complaintData);
+                    await complaintsCollection.add(complaintData);
                     const tokenDisplayThankYou = document.getElementById('tokenDisplayThankYou');
                     tokenDisplayThankYou.textContent = token;
                     
@@ -660,7 +520,7 @@
 
             trackForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                const trackButton = e.target.querySelector('button[type="submit"]');
+                const trackButton = e.target.querySelector('button[type极速快3submit"]');
                 const tokenToTrack = tokenInput.value.trim();
                 if (!tokenToTrack) return;
 
@@ -669,20 +529,21 @@
                 trackingResult.classList.remove('hidden');
 
                 try {
-                    const complaint = await getComplaintByToken(tokenToTrack);
+                    const querySnapshot = await complaintsCollection.where('token', '==', tokenToTrack).get();
                     
-                    if (complaint) {
+                    if (querySnapshot.empty) {
+                        trackingResult.innerHTML = `<p class="text-red-400">No complaint found with this token.</p>`;
+                    } else {
+                        const complaint = querySnapshot.docs[0].data();
                         const statusClass = complaint.status.toLowerCase().replace(' ', '-');
                         trackingResult.innerHTML = `
                             <div class="bg-gray-900 bg-opacity-50 p-4 rounded-lg status-${statusClass}">
                                 <p class="font-bold">Status: <span class="text-white">${complaint.status}</span></p>
                                 <p class="text-sm text-gray-400 mt-1">Token: ${complaint.token}</p>
                                 <p class="text-sm text-gray-400">Type: ${complaint.complaintType}</p>
-                                <p class="text-sm text-gray-400 mt-2">Submitted: ${new Date(complaint.timestamp).toLocaleDateString()}</p>
+                                <p class="text-sm text-gray-400 mt-2">Submitted: ${complaint.timestamp ? new Date(complaint.timestamp.seconds * 1000).toLocaleDateString() : 'N/A'}</p>
                             </div>
                         `;
-                    } else {
-                        trackingResult.innerHTML = `<p class="text-red-400">No complaint found with this token.</p>`;
                     }
                 } catch (error) {
                     console.error("Error tracking complaint:", error);
@@ -716,15 +577,9 @@
             });
 
             // Initialize the application
-            async function initApp() {
-                try {
-                    await initDatabase();
-                    console.log("Application initialized successfully");
-                    dataStatus.textContent = "Local Storage: Ready";
-                } catch (error) {
-                    console.error("Failed to initialize application:", error);
-                    dataStatus.textContent = "Local Storage: Error";
-                    alert("Failed to initialize the application. Some features may not work.");
+            function initApp() {
+                if (initializeFirebase()) {
+                    console.log("Application initialized successfully with your Firebase configuration");
                 }
             }
 
