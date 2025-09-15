@@ -87,6 +87,16 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* Connection Status */
+        #connection-status {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            transition: background-color 0.5s ease;
+        }
+        #connection-status.online { background-color: #34d399; box-shadow: 0 0 8px #34d399; }
+        #connection-status.offline { background-color: #f87171; box-shadow: 0 0 8px #f87171; }
+
         /* Scrollbar */
         ::-webkit-scrollbar {
             width: 10px;
@@ -101,7 +111,6 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #e6c599;
         }
-
     </style>
 </head>
 <body class="min-h-screen p-4">
@@ -181,8 +190,16 @@
             <div id="adminPanelView" class="hidden">
                  <div class="glass-container p-6 md:p-8 rounded-2xl fade-in">
                     <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-3xl font-bold text-white main-title">Admin Dashboard</h2>
-                        <button id="logoutBtn" class="p-2 px-4 font-bold rounded-lg themed-button text-sm">Logout</button>
+                        <div class="flex items-center gap-4">
+                            <h2 class="text-3xl font-bold text-white main-title">Admin Dashboard</h2>
+                            <button id="refreshBtn" class="themed-button p-2 rounded-full text-sm" title="Refresh Complaints">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/><path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/></svg>
+                            </button>
+                        </div>
+                        <div class="flex items-center gap-3">
+                             <span id="connection-status" title="Connection Status"></span>
+                            <button id="logoutBtn" class="p-2 px-4 font-bold rounded-lg themed-button text-sm">Logout</button>
+                        </div>
                     </div>
                     <div id="complaintList" class="space-y-4 max-h-[60vh] overflow-y-auto pr-2">
                         <!-- Complaints will be loaded here -->
@@ -249,6 +266,24 @@
         const adminLoginContainer = document.getElementById('adminLoginContainer');
         const mainContent = document.getElementById('mainContent');
         const thankYouView = document.getElementById('thankYouView');
+        const connectionStatus = document.getElementById('connection-status');
+
+        // --- CONNECTION STATUS ---
+        const updateOnlineStatus = () => {
+            if (navigator.onLine) {
+                connectionStatus.classList.remove('offline');
+                connectionStatus.classList.add('online');
+                connectionStatus.title = "Connected";
+            } else {
+                connectionStatus.classList.remove('online');
+                connectionStatus.classList.add('offline');
+                connectionStatus.title = "Offline - Data may not be current";
+            }
+        };
+        window.addEventListener('online', updateOnlineStatus);
+        window.addEventListener('offline', updateOnlineStatus);
+        updateOnlineStatus();
+
 
         // --- UI TOGGLING ---
         const showView = (view) => {
@@ -266,6 +301,7 @@
         const adminPasswordInput = document.getElementById('adminPassword');
         const adminError = document.getElementById('adminError');
         const logoutBtn = document.getElementById('logoutBtn');
+        const refreshBtn = document.getElementById('refreshBtn');
         const complaintList = document.getElementById('complaintList');
         const ADMIN_PASS = "admin123";
 
@@ -286,10 +322,21 @@
             complaintList.innerHTML = `<p class="text-center text-gray-400">Loading complaints...</p>`;
             if (unsubscribe) unsubscribe();
         });
+        
+        refreshBtn.addEventListener('click', () => {
+            complaintList.innerHTML = `<p class="text-center text-gray-400">Refreshing data...</p>`;
+            loadAdminComplaints();
+        });
+
 
         let unsubscribe;
         function loadAdminComplaints() {
+            if (unsubscribe) {
+                unsubscribe();
+            }
              unsubscribe = onSnapshot(complaintsCol, (snapshot) => {
+                console.log("Received new data snapshot from Firestore.");
+                updateOnlineStatus(); // Also update status when we get data
                 if (snapshot.empty) {
                     complaintList.innerHTML = `<p class="text-center text-gray-400">No complaints found.</p>`;
                     return;
@@ -327,6 +374,9 @@
                          <p class="update-success-msg text-green-400 text-xs mt-2 text-right hidden">Updated!</p>
                     </div>
                 `).join('');
+            }, (error) => {
+                 console.error("Firestore snapshot error:", error);
+                 updateOnlineStatus(); // It's likely offline if we hit an error here
             });
         }
         
