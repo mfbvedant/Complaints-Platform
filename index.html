@@ -11,20 +11,20 @@
     <!-- Firebase App (the core Firebase SDK) -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <!-- Firebase Firestore -->
-    <script src="https://www.gstatic.com/firebasejs/9极速快3.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <style>
         :root {
             --primary-gold: #c5a880;
             --dark-forest: #0a1412;
             --off-white: #f3f3f3;
-            --glass-b极速快3g: rgba(10, 20, 18, 0.6);
+            --glass-bg: rgba(10, 20, 18, 0.6);
         }
         body {
             background-color: var(--dark-forest);
             font-family: 'Lato', sans-serif;
             color: var(--off-white);
             overflow-x: hidden;
-            background-image: url('https://images.unsplash.com/photo-1448375240586-882707db888b?q=80&w=2070&auto=format&fit=crop');
+            background-image: url('https://images.unsplash.com/photo-1448375240586-882707极速快3db888b?q=80&w=2070&auto=format&fit=crop');
             background-size: cover;
             background-position: center center;
             background-attachment: fixed;
@@ -48,7 +48,7 @@
         }
         .themed-button {
             border: 1px solid var(--primary-gold);
-            color: var(--primary-gold);
+            color: var(--primary-gold;
             background: transparent;
             transition: all 0.3s ease;
             box-shadow: 0 0 5px var(--primary-gold), inset 0 0 5px rgba(197, 168, 128, 0.3);
@@ -56,7 +56,7 @@
         .themed-button:hover:not(:disabled) {
             color: var(--dark-forest);
             background: var(--primary-gold);
-            box-shadow: 0 0 20px var(--primary-gold);
+            box-shadow: 0 0 20极速快3px var(--primary-gold);
             transform: translateY(-2px);
         }
         .themed-button:disabled {
@@ -64,14 +64,14 @@
             opacity: 0.5;
         }
         .form-input, .form-select, .admin-editable {
-            background: rgba(0, 0, 0, 极速快30.3);
+            background: rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(197, 168, 128, 0.5);
             color: #fff;
             transition: all 0.3s ease;
         }
         .form-input:focus, .form-select:focus, .admin-editable:focus {
             outline: none;
-            box-shadow: 0 0 15px rgba(197, 168, 128, 0.7);
+            box-shadow: 0 0 15px rgba极速快3(197, 168, 128, 0.7);
             border-color: var(--primary-gold);
         }
         .form-select option {
@@ -99,7 +99,7 @@
             transition: background-color 0.5s ease;
         }
         #connection-status.online { background-color: #34d399; box-shadow: 0 0 8px #34d399; }
-        #connection-status.offline { background-color: #f87171; box-shadow: 极速快30 0 8px #f87171; }
+        #connection-status.offline { background-color: #f87171; box-shadow: 0 0 8px #f87171; }
 
         /* Scrollbar */
         ::-webkit-scrollbar {
@@ -134,7 +134,7 @@
     <div id="app" class="max-w-7xl mx-auto">
         <!-- Firebase Status Indicator -->
         <div id="firebaseStatus" class="fixed top-4 right-4 glass-container p-3 rounded-lg flex items-center gap-2 z-50 status-connected">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-400" viewBox="0 0 20 20极速快3" fill="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
             </svg>
             <span class="text-sm">Firebase: Connected</span>
@@ -150,7 +150,7 @@
         </header>
 
         <!-- Main Content -->
-        <main id="mainContent" class="fade-in" style="animation-delay: 0.2s;">
+        <main id="mainContent" class="fade-in" style="animation-del极速快3ay: 0.2s;">
             <!-- User View -->
             <div id="userView">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -160,7 +160,7 @@
                         <form id="complaintForm" class="space-y-4">
                             <input type="text" id="name" placeholder="Your Full Name" class="w-full p-3 rounded-lg form-input" required>
                             <input type="tel" id="mobile" placeholder="Your Mobile Number" class="w-full p-3 rounded-lg form-input" required pattern="[0-9]{10}">
-                            <select id="occupation" class="w-full p-3 rounded-lg form-select极速快3" required>
+                            <select id="occupation" class="w-full p-3 rounded-lg form-select" required>
                                 <option value="" disabled selected>Select Your Occupation</option>
                                 <option value="Student">Student</option>
                                 <option value="Teaching Staff">Teaching Staff</option>
@@ -189,7 +189,7 @@
                                     <option value="IT Engineering">IT Engineering</option>
                                     <option value="Mechanical Engineering">Mechanical Engineering</option>
                                     <option value="Electrical Engineering">Electrical Engineering</option>
-                                    <option value="Civil Engineering">Civil Engineering</option>
+                                    <option value极速快3="Civil Engineering">Civil Engineering</option>
                                     <option value="AIDS">Artificial Intelligence & Data Science</option>
                                     <option value="AIML">Artificial Intelligence & Machine Learning</option>
                                 </select>
@@ -197,7 +197,7 @@
                                 <input type="text" id="rollNo" placeholder="Roll Number" class="w-full p-3 rounded-lg form-input" required>
                             </div>
                             
-                            <select id="complaintType" class="w-full p-3 rounded-lg form-select" required>
+                            <select id="complaintType" class="极速快3w-full p-3 rounded-lg form-select" required>
                                 <option value="" disabled selected>Select Complaint Type</option>
                                 <option value="Infrastructure">Infrastructure</option>
                                 <option value="Sanitation">Sanitation</option>
@@ -218,8 +218,8 @@
                     </div>
 
                     <!-- Complaint Tracker -->
-                    <div id="trackerContainer" class="glass-container p-6极速快3 md:p-8 rounded-2xl">
-                        <h2 class="text-3xl font-bold mb-极速快36 text-white main-title">Track Your Complaint</h2>
+                    <div id="trackerContainer" class="glass-container p-6 md:p-8 rounded-2xl">
+                        <h2 class="text-3xl font-bold mb-6 text-white main-title">Track Your Complaint</h2>
                         <form id="trackForm" class="space-y-4">
                             <input type="text" id="tokenInput" placeholder="Enter Your Complaint Token" class="w-full p-3 rounded-lg form-input" required>
                             <button type="submit" class="w-full p-3 font-bold rounded-lg themed-button">Track Status</button>
@@ -236,7 +236,7 @@
                 <div class="max-w-md mx-auto glass-container p-8 rounded-2xl fade-in">
                     <h2 class="text-3xl font-bold mb-6 text-center text-white main-title">Admin Login</h2>
                     <form id="adminLoginForm" class="space-y-4">
-                        <input type="password" id="adminPassword" placeholder="Enter Admin Password极速快3" class="w-full p-3 rounded-lg form-input" required>
+                        <input type="password" id="adminPassword" placeholder="Enter Admin Password" class="w-full p-3 rounded-lg form-input" required>
                         <button type="submit" class="w-full p-3 font-bold rounded-lg themed-button">Login</button>
                         <p id="adminError" class="text-red-400 text-center hidden">Invalid Password.</p>
                     </form>
@@ -251,8 +251,8 @@
                             <h2 class="text-3xl font-bold text-white main-title">Admin Dashboard</h2>
                             <button id="refreshBtn" class="themed-button p-2 rounded-full text-sm" title="Refresh Complaints">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
-                                    <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
-                                    <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192极速快3l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 极速快31 8 极速快34.466z"/>
+                                    <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.极速快35.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
+                                    <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c极速快3.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
                                 </svg>
                             </button>
                         </div>
@@ -283,7 +283,7 @@
                     <button id="copyTokenBtnThankYou" class="ml-4 p-2 rounded-lg themed-button text-sm">Copy</button>
                 </div>
                 <p id="copy-success-thank-you" class="text-green-400 mt-2 hidden">Copied!</p>
-                <button id="goBackBtn" class="mt-8 w-full p-3 font-bold rounded-lg themed-button">Lodge Another Complaint</button>
+                <button id="goBackBtn" class="mt-8极速快3 w-full p-3 font-bold rounded-lg themed-button">Lodge Another Complaint</button>
             </div>
         </div>
     </div>
@@ -298,7 +298,7 @@
                 projectId: "complain-c7bfb",
                 storageBucket: "complain-c7bfb.firebasestorage.app",
                 messagingSenderId: "269132567387",
-                appId: "1:269132567387:web:c76748a713极速快3e8d79658c07e",
+                appId: "1:269132567387:web:c76748a713e8d79658c07e",
                 measurementId: "G-6863CC7ZT5"
             };
             
@@ -340,7 +340,7 @@
                     console.error("Error initializing Firebase:", error);
                     firebaseStatus.innerHTML = `
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 极速快30 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
                         </svg>
                         <span class="text-sm">Firebase: Error - ${error.message}</span>
                     `;
@@ -353,433 +353,4 @@
                 const year = yearSelect.value;
                 divisionSelect.innerHTML = '<option value="" disabled selected>Select Division</option>';
                 
-                if (year === 'FE') {
-                    // First year divisions A-I
-                    for (let i = 65; i <= 73; i++) { // A to I
-                        const division = String.fromCharCode(i);
-                        divisionSelect.innerHTML += `<option value="${division}">Division ${division}</option>`;
-                    }
-                } else {
-                    // Other years divisions A-C
-                    for (let i = 65; i <= 67; i++) { // A to C
-                        const division = String.fromCharCode(i);
-                        divisionSelect.innerHTML += `<option value="${division}">Division ${division}</option>`;
-                    }
-                }
-            }
-
-            // Show/hide student fields based on occupation
-            occupationSelect.addEventListener('change', function() {
-                if (this.value === 'Student') {
-                    studentFields.style.display = 'block';
-                    // Make student fields required
-                    document.getElementById('year').required = true;
-                    document.getElementById('division').required = true;
-                    document.getElementById('branch').required = true;
-                    document.getElementById('rollNo').required = true;
-                    // Populate divisions for default selection
-                    populateDivisions();
-                } else {
-                    studentFields.style.display = 'none';
-                    // Remove required attribute from student fields
-                    document.getElementById('year').required = false;
-                    document.getElementById('division').required = false;
-                    document.getElementById('branch').required = false;
-                    document.getElementById('rollNo').required = false;
-                }
-            });
-
-            // Update divisions when year changes
-            yearSelect.addEventListener('change', populateDivisions);
-
-            // Export data function
-            exportBtn.addEventListener('click', async () => {
-                try {
-                    const querySnapshot = await complaintsCollection.get();
-                    const complaints = [];
-                    querySnapshot.forEach(doc => {
-                        complaints.push({ id: doc.id, ...doc.data() });
-                    });
-                    
-                    const dataStr = JSON.stringify(complaints, null, 2);
-                    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-                    
-                    const exportFileDefaultName = `complaints-${new Date().toISOString().split('T')[0]}.json`;
-                    
-                    const linkElement = document.createElement('a');
-                    linkElement.setAttribute('href', dataUri);
-                    linkElement.setAttribute('download', exportFileDefaultName);
-                    linkElement.click();
-                } catch (error) {
-                    console.error("Error exporting data:", error);
-                    alert("Failed to export data: " + error.message);
-                }
-            });
-
-            // Import data function
-            importInput.addEventListener('change', async (e) => {
-                if (e.target.files.length > 0) {
-                    try {
-                        const file = e.target.files[0];
-                        const reader = new FileReader();
-                        
-                        reader.onload = async (event) => {
-                            try {
-                                const complaints = JSON.parse(event.target.result);
-                                
-                                if (!Array.isArray(complaints)) {
-                                    throw new Error("Invalid data format");
-                                }
-                                
-                                // Clear existing data
-                                const batch = db.batch();
-                                const snapshot = await complaintsCollection.get();
-                                snapshot.forEach(doc => {
-                                    batch.delete(doc.ref);
-                                });
-                                await batch.commit();
-                                
-                                // Add all imported complaints
-                                for (const complaint of complaints) {
-                                    // Remove the id field as it will be auto-generated
-                                    const { id, ...complaintData } = complaint;
-                                    await complaintsCollection.add(complaintData);
-                                }
-                                
-                                alert(`Successfully imported ${complaints.length} complaints`);
-                                loadAdminComplaints(); // Refresh the admin view
-                            } catch (error) {
-                                console.error("Error parsing imported file:", error);
-                                alert("Failed to import data: " + error.message);
-                            }
-                        };
-                        
-                        reader.onerror = event => {
-                            alert("Error reading file: " + event.target.error);
-                        };
-                        
-                        reader.readAsText(file);
-                    } catch (error) {
-                        console.error("Error importing data:", error);
-                        alert("Failed to import data: " + error.message);
-                    }
-                }
-            });
-
-            // Connection Status
-            const updateOnlineStatus = () => {
-                if (navigator.onLine) {
-                    connectionStatus.classList.remove('offline');
-                    connectionStatus.classList.add('online');
-                    connectionStatus.title = "Connected to Cloud";
-                } else {
-                    connectionStatus.classList.remove('online');
-                    connectionStatus.classList.add('offline');
-                    connectionStatus.title = "Offline - Data will sync when online";
-                }
-            };
-            window.addEventListener('online', updateOnlineStatus);
-            window.addEventListener('offline', updateOnlineStatus);
-            updateOnlineStatus();
-
-            // UI Toggling
-            const showView极速快3 = (view) => {
-                userView.classList.add('hidden');
-                adminLoginView.classList.add('hidden');
-                adminPanelView.classList.add('hidden');
-                view.classList.remove('hidden');
-                adminLoginContainer.style.display = (view === userView) ? 'block' : 'none';
-            };
-
-            adminLoginBtn.addEventListener('click', () => showView(adminLoginView));
-            
-            // Admin Login
-            const adminLoginForm = document.getElementById('adminLoginForm');
-            const adminPasswordInput = document.getElementById('adminPassword');
-            const adminError = document.getElementById('adminError');
-
-            adminLogin极速快3Form.addEventListener('submit', (e) => {
-                e.preventDefault();
-                if (adminPasswordInput.value === ADMIN_PASS) {
-                    adminError.classList.add('hidden');
-                    adminPasswordInput.value = '';
-                    showView(adminPanelView);
-                    loadAdminComplaints();
-                } else {
-                    adminError.classList.remove('hidden');
-                }
-            });
-
-            // Logout
-            const logoutBtn = document.getElementById('logoutBtn');
-            logoutBtn.addEventListener('click', () => {
-                showView(userView);
-                document.getElementById('complaintList').innerHTML = '<p class="text-center text-gray-400">Loading complaints...</p>';
-            });
-
-            // Refresh Complaints
-            const refreshBtn = document.getElementById('refreshBtn');
-            refreshBtn.addEventListener('click', () => {
-                document.getElementById('complaintList').innerHTML = '<p class="text-center text-gray-400">Refreshing data...</p>';
-                loadAdminComplaints();
-            });
-
-            // Load Complaints for Admin
-            function loadAdminComplaints() {
-                if (!complaintsCollection) {
-                    document.getElementById('complaintList').innerHTML = '<p class="text-center text-red-400">Firebase not configured properly.</p>';
-                    return;
-                }
-                
-                complaintsCollection.orderBy('timestamp', 'desc').get()
-                .then((querySnapshot) => {
-                    if (querySnapshot.empty) {
-                        document.getElementById('complaintList').innerHTML = '<p class="text-center text-gray-400">No complaints found.</p>';
-                        return;
-                    }
-                    
-                    const complaints = [];
-                    querySnapshot.forEach((doc) => {
-                        complaints.push({ id: doc.id, ...doc.data() });
-                    });
-                    
-                    renderComplaints(complaints);
-                })
-                .catch((error) => {
-                    console.error('Failed to load complaints:', error);
-                    document.getElementById('complaintList').innerHTML = `
-                        <p class="text-center text-red-400">Failed to load complaints. Please try again.</p>
-                    `;
-                });
-            }
-
-            function renderComplaints(complaints) {
-                const complaintList = document.getElementById('complaintList');
-                
-                if (!complaints || complaints.length === 0) {
-                    complaintList.innerHTML = '<p class="text-center text-gray-400">No complaints found.</p>';
-                    return;
-                }
-                
-                complaintList.innerHTML = complaints.map(c => `
-                    <div class="admin-complaint-card bg-gray-900 bg-opacity-50 p-4 rounded-lg status-${c.status.toLowerCase().replace(' ', '-')}">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <p class="text-sm text-gray-400">Name (${c.occupation})</p>
-                                <input type="text" value="${c.name}" class="admin-editable admin-name w-full p-1 rounded-md text-white font-bold bg-transparent border-gray-600">
-                                
-                                <p class="text-sm text-gray-400 mt-2">Mobile</p>
-                                <input type="text" value="${c.mobile || ''}" class="admin-editable admin-mobile w-full p-1 rounded-md text-white bg-transparent border-gray-600">
-                                
-                                ${c.occupation === 'Student' ? `
-                                <p class="text-sm text-gray-400 mt-2">Year: ${c.year || 'N/A'}</p>
-                                <p class="text-sm text-gray-400">Division: ${c.division || 'N/A'}</极速快3p>
-                                <p class="text-sm text-gray-400">Branch: ${c.branch || 'N/A'}</p>
-                                <p class="text-sm text-gray-400">Roll No: ${c.rollNo || 'N/A'}</p>
-                                ` : ''}
-                                
-                                <p class="text-sm text-yellow-300 font-mono mt-2">${c.token}</p>
-                            </div>
-                            <span class="text-xs text-gray-400">${c.timestamp ? new Date(c.timestamp.seconds * 1000).toLocaleString() : 'N/A'}</span>
-                        </div>
-                        <div class="mt-2">
-                            <p class="font-semibold text-yellow-400">${c.complaintType}</p>
-                            <textarea class="admin-editable admin-complaint-text w-full p-1 rounded-md text-gray-300 mt-1 bg-transparent border-gray-600" rows="3">${c.complaintText}</textarea>
-                        </div>
-                        <div class="mt-4 flex items-center gap-4">
-                            <select data-id="${c.id}" class="admin-status-select w-full p-2 rounded-lg form-select text-sm">
-                                <option value="Pending" ${c.status === 'Pending' ? 'selected' : ''}>Pending</option>
-                                <option value="In Progress" ${c.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
-                                <option value="Resolved" ${极速快3c.status === 'Resolved' ? 'selected' : ''}>Resolved</option>
-                            </select>
-                            <button data-id="${c.id}" class="admin-update-btn themed-button p-2 px-4 rounded-lg text-sm">Save</button>
-                        </div>
-                        <p class="update-success-msg text-green-400 text-xs mt-2 text-right hidden">Updated!</p>
-                    </div>
-                `).join('');
-            }
-
-            // Update Complaint
-            document.getElementById('complaintList').addEventListener('click', async (e极速快3) => {
-                if (e.target.classList.contains('admin-update-btn')) {
-                    const button = e.target;
-                    const complaintId = button.dataset.id;
-                    const card = button.closest('.admin-complaint-card');
-                    
-                    const updatedData = {
-                        name: card.querySelector('.admin-name').value.trim(),
-                        mobile: card.querySelector('.admin-mobile').value.trim(),
-                        complaintText: card.querySelector('.admin-complaint-text').value.trim(),
-                        status: card.querySelector('.admin-status-select').value
-                    };
-
-                    try {
-                        button.textContent = 'Saving...';
-                        button.disabled = true;
-                        
-                        await complaintsCollection.doc(complaintId).update(updatedData);
-                        
-                        const successMsg = card.querySelector('.update-success-msg');
-                        successMsg.classList.remove('hidden');
-                        setTimeout(() => successMsg.classList.add('hidden'), 2500);
-
-                    } catch (err) {
-                        console.error("Error updating complaint: ", err);
-                        alert('Failed to update complaint. Please try again.');
-                    } finally {
-                        button.textContent = 'Save';
-                        button.disabled = false;
-                    }
-                }
-            });
-
-            // Submit Complaint
-            const complaintForm = document.getElementById('complaintForm');
-            const submitError = document.getElementById('submitError');
-
-            complaintForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const submitButton = e.target.querySelector('button[type="submit"]');
-                const submitText = document.getElementById('submit-text');
-                const submitSpinner = document.getElementById('submit-spinner');
-                
-                submitButton.disabled = true;
-                submitText.classList.add('hidden');
-                submitSpinner.classList.remove('hidden');
-                submitError.classList.add('hidden');
-
-                const token = `TKN-${Date.now().toString().slice(-6)}-${Math.random().toString(36).substr(2, 4).toUpperCase()}`;
-                
-                // Prepare complaint data
-                const complaintData = {
-                    name: document.getElementById('name').value.trim(),
-                    mobile: document.getElementById('mobile').value.trim(),
-                    occupation: document.getElementById('occupation').value,
-                    complaintType: document.getElementById('complaintType').value,
-                    complaintText: document.getElementById('complaintText').极速快3value.trim(),
-                    token: token,
-                    status: 'Pending',
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                };
-
-                // Add student-specific data if occupation is Student
-                if (complaintData.occupation === 'Student') {
-                    complaintData.year = document.getElementById('year').value;
-                    complaintData.division = document.getElementById('division').value;
-                    complaintData.branch = document.getElementById('branch').value;
-                    complaintData.rollNo = document.getElementById('rollNo').value.trim();
-                }
-
-                try {
-                    await complaintsCollection.add(complaintData);
-                    const tokenDisplayThankYou = document.getElementById('tokenDisplayThankYou');
-                    tokenDisplayThankYou.textContent = token;
-                    
-                    mainContent.classList.add('hidden');
-                    thankYouView.classList.remove('hidden');
-                    
-                    complaintForm.reset();
-                    // Hide student fields after form reset
-                    studentFields.style.display = 'none';
-                } catch (error) {
-                    console.error("Error adding complaint: ", error);
-                    submitError.textContent = "Failed to submit complaint. Please try again.";
-                    submitError.classList.remove('hidden');
-                } finally {
-                    submitButton.disabled = false;
-                    submitText.classList.remove('hidden');
-                    submitSpinner.classList.add('hidden');
-                }
-            });
-
-            // Track Complaint
-            const trackForm = document.getElementById('trackForm');
-            const tokenInput = document.getElementById('tokenInput');
-            const trackingResult = document.getElementById('trackingResult');
-
-            trackForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const trackButton = e.target.querySelector('button[type="submit"]');
-                const tokenToTrack = tokenInput.value.trim();
-                if (!tokenToTrack) return;
-
-                trackButton.disabled = true;
-                trackingResult.innerHTML = `<p class="text-yellow-300">Searching...</p>`;
-                trackingResult.classList.remove('hidden');
-
-                try {
-                    const querySnapshot = await complaintsCollection.where('token', '==', tokenToTrack).get();
-                    
-                    if (querySnapshot.empty) {
-                        trackingResult.innerHTML = `<p class="text-red-400">No complaint found with this token.</p>`;
-                    } else {
-                        const complaint = querySnapshot.docs[0].data();
-                        const statusClass = complaint.status.toLowerCase().replace(' ', '-');
-                        
-                        let studentInfo = '';
-                        if (complaint.occupation === 'Student') {
-                            studentInfo = `
-                                <p class="text-sm text-gray-400">Year: ${complaint.year || 'N/A'}</p>
-                                <p class="text-sm text-gray-400">Division: ${complaint.division || 'N/A'}</p>
-                                <p class="text-sm text-gray-400">Branch: ${complaint.branch || 'N/A'}</p>
-                                <p class="text-sm text-gray-400">Roll No: ${complaint.rollNo || 'N/A'}</p>
-                            `;
-                        }
-                        
-                        trackingResult.innerHTML = `
-                            <div class="bg-gray-900 bg-opacity-50 p-4 rounded-lg status-${statusClass}">
-                                <p class="font-bold">Status: <span class="text-white">${complaint.status}</span></p>
-                                <p class="text-sm text-gray-400 mt-1">Token: ${complaint.token}</p>
-                                <p class="text-sm text-gray-400">Type: ${complaint.complaintType}</p>
-                                ${studentInfo}
-                                <p class="text-sm text-gray-400 mt-2">Submitted: ${complaint.timestamp ? new Date(complaint.timestamp.seconds * 1000).toLocaleDateString() : 'N/A'}</p>
-                            </div>
-                        `;
-                    }
-                } catch (error) {
-                    console.error("Error tracking complaint:", error);
-                    trackingResult.innerHTML = `<p class="text-red-400">Error fetching status. Please try again.</p>`;
-                } finally {
-                    trackButton.disabled = false;
-                }
-            });
-
-            // Thank You View
-            document.getElementById('goBackBtn').addEventListener('click', () => {
-                thankYouView.classList.add('hidden');
-                mainContent.classList.remove('hidden');
-            });
-            
-            document.getElementById('copyTokenBtnThankYou').addEventListener('click', () => {
-                const tokenDisplayThankYou = document.getElementById('tokenDisplayThankYou');
-                const copySuccess = document.getElementById('copy-success-thank-you');
-                const textArea = document.createElement("textarea");
-                textArea.value = tokenDisplayThankYou.textContent;
-                document.body.appendChild(textArea);
-                textArea.select();
-                try {
-                    document.execCommand('copy');
-                    copySuccess.classList.remove('hidden');
-                    setTimeout(() => copySuccess.classList.add('hidden'), 2000);
-                } catch (err) {
-                    console.error('Failed to copy text: ', err);
-                }
-                document.body.removeChild(textArea);
-            });
-
-            // Initialize the application
-            function initApp() {
-                if (initializeFirebase()) {
-                    console.log("Application initialized successfully with Firebase");
-                }
-            }
-
-            // Start the app
-            initApp();
-        }
-
-        // Start the application
-        main();
-    </script>
-</body>
-</html>
+                if (year === '
