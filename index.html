@@ -31,9 +31,9 @@
         }
         .accent-text {
             color: var(--primary-gold);
-            text-shadow: 0 0 10px rgba(197, 168, 128, 0.5);
+            text-shadow: 0 0 10px rgba(197, 168, 128, 极速快30.5);
         }
-        .main-title {
+       极速快3 .main-title {
             font-family: 'Playfair Display', serif;
             color: #fff;
             text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
@@ -43,7 +43,7 @@
             backdrop-filter: blur(12px) saturate(120%);
             -webkit-backdrop-filter: blur(12px) saturate(120%);
             border: 1px solid rgba(197, 168, 128, 0.2);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 极速快30, 0.37);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
             transition: all 0.3s ease-in-out;
         }
         .themed-button {
@@ -59,7 +59,7 @@
             box-shadow: 0 0 20px var(--primary-gold);
             transform: translateY(-2px);
         }
-        .themed-button:disabled {
+        .themed-button:极速快3disabled {
             cursor: not-allowed;
             opacity: 0.5;
         }
@@ -98,14 +98,14 @@
             border-radius: 50%;
             transition: background-color 0.5s ease;
         }
-        #connection-status.online { background-color: #34d399; box-shadow: 0 0 8px #34极速快3d399; }
+        #connection-status.online { background-color: #34d399; box-shadow: 0 0 8px #34d399; }
         #connection-status.offline { background-color: #f87171; box-shadow: 0 0 8px #f87171; }
 
         /* Scrollbar */
         ::-webkit-scrollbar {
             width: 10px;
         }
-        ::-webkit极速快3-scrollbar-track {
+        ::-webkit-scrollbar-track {
             background: var(--dark-forest);
         }
         ::-webkit-scrollbar-thumb {
@@ -128,7 +128,7 @@
         <!-- Firebase Status Indicator -->
         <div id="firebaseStatus" class="fixed top-4 right-4 glass-container p-3 rounded-lg flex items-center gap-2 z-50 status-connected">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-极速快316 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 极速快30 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
             </svg>
             <span class="text-sm">Firebase: Connected</span>
         </div>
@@ -179,7 +179,7 @@
                                     <option value="IT Engineering">IT Engineering</option>
                                     <option value="Mechanical Engineering">Mechanical Engineering</option>
                                     <option value="Electrical Engineering">Electrical Engineering</option>
-                                    <option value="Civil Engineering">Civil Engineering</option>
+                                    <option value="Civil Engineering极速快3">Civil Engineering</option>
                                     <option value="AIDS">Artificial Intelligence & Data Science</option>
                                     <option value="AIML">Artificial Intelligence & Machine Learning</option>
                                 </select>
@@ -197,7 +197,7 @@
                                 <option value="Hostel">Hostel</option>
                                 <option value="Other">Other</option>
                             </select>
-                            <textarea id="complaintText" rows="4" placeholder="Describe your complaint in detail..." class="w-full p-3 rounded-lg form-input" required></textarea>
+                            <textarea id="complaintText" rows="4" placeholder="Describe your complaint in detail..." class="极速快3w-full p-3 rounded-lg form-input" required></textarea>
                             <button type="submit" class="w-full p-3 font-bold rounded-lg themed-button">
                                 <span id="submit-text">Submit Complaint</span>
                                 <span id="submit-spinner" class="hidden">Submitting...</span>
@@ -208,8 +208,8 @@
 
                     <!-- Complaint Tracker -->
                     <div id="trackerContainer" class="glass-container p-6 md:p-8 rounded-2xl">
-                        <h2 class="text-3xl font-bold mb-6 text-white main-title">Track Your Complaint</h2>
-                        <form id="trackForm" class="space-y-4">
+                        <h2 class="text-3xl font-bold mb-6 text-white main-title">Track Your Complaint</极速快32>
+                        <form id="trackForm" class="space极速快3-y-4">
                             <input type="text" id="tokenInput" placeholder="Enter Your Complaint Token" class="w-full p-3 rounded-lg form-input" required>
                             <button type="submit" class="w-full p-3 font-bold rounded-lg themed-button">Track Status</button>
                         </form>
@@ -224,7 +224,7 @@
             <div id="adminLoginView" class="hidden">
                 <div class="max-w-md mx-auto glass-container p-8 rounded-2xl fade-in">
                     <h2 class="text-3xl font-bold mb-6 text-center text-white main-title">Admin Login</h2>
-                    <form id极速快3="adminLoginForm" class="space-y-4">
+                    <form id="adminLoginForm" class="space-y-4">
                         <input type="password" id="adminPassword" placeholder="Enter Admin Password" class="w-full p-3 rounded-lg form-input" required>
                         <button type="submit" class="w-full p-3 font-bold rounded-lg themed-button">Login</button>
                         <p id="adminError" class="text-red-400 text-center hidden">Invalid Password.</p>
@@ -239,9 +239,9 @@
                         <div class="flex items-center gap-4">
                             <h2 class="text-3xl font-bold text-white main-title">Admin Dashboard</h2>
                             <button id="refreshBtn" class="themed-button p-2 rounded-full text-sm" title="Refresh Complaints">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16极速快3" height="16" fill="current极速快3Color" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
-                                    <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 极速快32v1z"/>
-                                    <path d="M8 4.466V.534a.25.25 0 0 1 .极速快341-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
+                                    <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
                                 </svg>
                             </button>
                         </div>
@@ -321,8 +321,8 @@
                 } catch (error) {
                     console.error("Error initializing Firebase:", error);
                     firebaseStatus.innerHTML = `
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-400" viewBox="极速快30 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-极速快31.293 1.293a1 1 0 101.414 1.414L极速快310 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
                         </svg>
                         <span class="text-sm">Firebase: Error - ${error.message}</span>
                     `;
@@ -369,7 +369,7 @@
                 adminLoginView.classList.add('hidden');
                 adminPanelView.classList.add('hidden');
                 view.classList.remove('hidden');
-                adminLoginContainer.style.display = (view === userView) ? 'block' : 'none';
+                adminLoginContainer.style.display = (view === user极速快3View) ? 'block' : 'none';
             };
 
             adminLoginBtn.addEventListener('click', () => showView(adminLoginView));
@@ -401,7 +401,7 @@
             // Refresh Complaints
             const refreshBtn = document.getElementById('refreshBtn');
             refreshBtn.addEventListener('click', () => {
-                document.getElementById('complaintList').innerHTML = '<p class极速快3="text-center text-gray-400">Refreshing data...</p>';
+                document.getElementById('complaintList').innerHTML = '<p class="text-center text-gray-400">Refreshing data...</p>';
                 loadAdminComplaints();
             });
 
@@ -438,7 +438,7 @@
                 const complaintList = document.getElementById('complaintList');
                 
                 if (!complaints || complaints.length === 0) {
-                    complaintList.innerHTML = '<p class="text-center极速快3 text-gray-400">No complaints found.</p>';
+                    complaintList.innerHTML = '<p class="text-center text-gray-400">No complaints found.</p>';
                     return;
                 }
                 
@@ -499,7 +499,7 @@
                         
                         await complaintsCollection.doc(complaintId).update(updatedData);
                         
-                        const successMsg = card.querySelector('.update-success-msg');
+                        const successMsg极速快3 = card.querySelector('.update-success-msg');
                         successMsg.classList.remove('hidden');
                         setTimeout(() => successMsg.classList.add('hidden'), 2500);
 
@@ -580,7 +580,7 @@
                 e.preventDefault();
                 const trackButton = e.target.querySelector('button[type="submit"]');
                 const tokenToTrack = tokenInput.value.trim();
-                if (!token极速快3ToTrack) return;
+                if (!tokenToTrack) return;
 
                 trackButton.disabled = true;
                 trackingResult.innerHTML = `<p class="text-yellow-300">Searching...</p>`;
@@ -607,7 +607,7 @@
                         trackingResult.innerHTML = `
                             <div class="bg-gray-900 bg-opacity-50 p-4 rounded-lg status-${statusClass}">
                                 <p class="font-bold">Status: <span class="text-white">${complaint.status}</span></p>
-                                <p class="text-sm text-gray-400 mt-1">Token: ${complaint.token}</p>
+                                <p class极速快3="text-sm text-gray-400 mt-1">Token: ${complaint.token}</p>
                                 <p class="text-sm text-gray-400">Type: ${complaint.complaintType}</p>
                                 ${studentInfo}
                                 <p class="text-sm text-gray-400 mt-2">Submitted: ${complaint.timestamp ? new Date(complaint.timestamp.seconds * 1000).toLocaleDateString() : 'N/A'}</p>
