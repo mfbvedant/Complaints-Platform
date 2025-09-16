@@ -121,6 +121,14 @@
             display: none;
             transition: all 0.3s ease;
         }
+        
+        /* Admin tools */
+        .admin-tools {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
     </style>
 </head>
 <body class="min-h-screen p-4">
@@ -128,7 +136,7 @@
         <!-- Firebase Status Indicator -->
         <div id="firebaseStatus" class="fixed top-4 right-4 glass-container p-3 rounded-lg flex items-center gap-2 z-50 status-connected">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                <path fill-rule="evenodd" d="M10 极速快318a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
             </svg>
             <span class="text-sm">Firebase: Connected</span>
         </div>
@@ -164,24 +172,34 @@
                             
                             <!-- Student-specific fields (initially hidden) -->
                             <div id="studentFields" class="student-fields space-y-4">
+                                <select id="year" class="w-full p-3 rounded-lg form-select">
+                                    <option value="" disabled selected>Select Year</option>
+                                    <option value="FE">First Year (FE)</option>
+                                    <option value="SE">Second Year</option>
+                                    <option value="TE">Third Year</option>
+                                    <option value="BE">Final Year</option>
+                                </select>
                                 <select id="division" class="w-full p-3 rounded-lg form-select">
                                     <option value="" disabled selected>Select Division</option>
-                                    <option value="FE">First Year (FE)</option>
-                                    <option value="Computer">Computer Department</option>
-                                    <option value="IT">IT Department</option>
-                                    <option value="Mechanical">Mechanical Department</option>
-                                    <option value="Electrical">Electrical Department</option>
-                                    <option value="Civil">Civil Department</option>
+                                    <!-- Options will be populated dynamically based on year -->
                                 </select>
                                 <select id="branch" class="w-full p-3 rounded-lg form-select">
                                     <option value="" disabled selected>Select Branch</option>
                                     <option value="Computer Engineering">Computer Engineering</option>
-                                    <option value="IT Engineering">IT Engineering</option>
+                                    <option value="Information Technology">Information Technology</option>
+                                    <option value="Electronics and Telecommunication">Electronics and Telecommunication</option>
+                                    <option value="Electronics Engineering">Electronics Engineering</option>
                                     <option value="Mechanical Engineering">Mechanical Engineering</option>
-                                    <option value="Electrical Engineering">Electrical Engineering</option>
                                     <option value="Civil Engineering">Civil Engineering</option>
-                                    <option value="AIDS">Artificial Intelligence & Data Science</option>
-                                    <option value="AIML">Artificial Intelligence & Machine Learning</option>
+                                    <option value="Electrical Engineering">Electrical Engineering</option>
+                                    <option value="Chemical Engineering">Chemical Engineering</option>
+                                    <option value="Biomedical Engineering">Biomedical Engineering</option>
+                                    <option value="Aerospace Engineering">Aerospace Engineering</option>
+                                    <option value="Automobile Engineering">Automobile Engineering</option>
+                                    <option value="Robotics Engineering">Robotics Engineering</option>
+                                    <option value="Artificial Intelligence and Data Science">Artificial Intelligence and Data Science</option>
+                                    <option value="Artificial Intelligence and Machine Learning">Artificial Intelligence and Machine Learning</option>
+                                    <option value="Cyber Security">Cyber Security</option>
                                 </select>
                                 <input type="text" id="rollNo" placeholder="Roll Number" class="w-full p-3 rounded-lg form-input">
                             </div>
@@ -200,7 +218,7 @@
                             <textarea id="complaintText" rows="4" placeholder="Describe your complaint in detail..." class="w-full p-3 rounded-lg form-input" required></textarea>
                             <button type="submit" class="w-full p-3 font-bold rounded-lg themed-button">
                                 <span id="submit-text">Submit Complaint</span>
-                                <span id="submit-spinner" class="hidden">Submitting...</span>
+                                <span id="submit-spinner极速快3" class="hidden">Submitting...</span>
                             </button>
                             <p id="submitError" class="text-red-400 text-center pt-2 hidden"></p>
                         </form>
@@ -234,13 +252,13 @@
 
             <!-- Admin Panel View -->
             <div id="adminPanelView" class="hidden">
-                 <div class="glass-container p-极速快36 md:p-8 rounded-2xl fade-in">
+                 <div class="glass-container p-6 md:p-8 rounded-2xl fade-in">
                     <div class="flex justify-between items-center mb-6">
                         <div class="flex items-center gap-4">
                             <h2 class="text-3xl font-bold text-white main-title">Admin Dashboard</h2>
-                            <button id="refreshBtn" class="themed-button p-2 rounded-full text-sm" title极速快3="Refresh Complaints">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
-                                    <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
+                            <button id="refreshBtn" class="themed-button p-2 rounded-full text-sm" title="Refresh Complaints">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 极速快3 0 16 16">
+                                    <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 极速快3 0 1 1 8 2v1z"/>
                                     <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
                                 </svg>
                             </button>
@@ -250,6 +268,17 @@
                             <button id="logoutBtn" class="p-2 px-4 font-bold rounded-lg themed-button text-sm">Logout</button>
                         </div>
                     </div>
+                    
+                    <!-- Admin Tools Section -->
+                    <div class="admin-tools mb-6">
+                        <button id="exportBtn" class="themed-button py-2 px-4 rounded-lg text-sm font-bold">Export Data</button>
+                        <div class="relative">
+                            <input type="file" id="importFile" accept=".json" class="hidden">
+                            <button id="importBtn" class="themed-button py-2 px-4 rounded-lg text-sm font-bold">Import Data</button>
+                        </div>
+                        <div id="importStatus" class="text-sm ml-4 hidden"></div>
+                    </div>
+                    
                     <div id="complaintList" class="space-y-4 max-h-[60vh] overflow-y-auto pr-2">
                         <!-- Complaints will be loaded here -->
                         <p class="text-center text-gray-400">Loading complaints...</p>
@@ -268,7 +297,7 @@
                     <span id="tokenDisplayThankYou" class="font-mono text-xl text-green-400 break-all"></span>
                     <button id="copyTokenBtnThankYou" class="ml-4 p-2 rounded-lg themed-button text-sm">Copy</button>
                 </div>
-                <p id="copy-success-thank-you极速快3" class="text-green-400 mt-2 hidden">Copied!</p>
+                <p id="copy-success-thank-you" class="text-green-400 mt-2 hidden">Copied!</p>
                 <button id="goBackBtn" class="mt-8 w-full p-3 font-bold rounded-lg themed-button">Lodge Another Complaint</button>
             </div>
         </div>
@@ -305,6 +334,12 @@
             const firebaseStatus = document.getElementById('firebaseStatus');
             const occupationSelect = document.getElementById('occupation');
             const studentFields = document.getElementById('studentFields');
+            const yearSelect = document.getElementById('year');
+            const divisionSelect = document.getElementById('division');
+            const exportBtn = document.getElementById('exportBtn');
+            const importBtn = document.getElementById('importBtn');
+            const importFile = document.getElementById('importFile');
+            const importStatus = document.getElementById('importStatus');
 
             // Initialize Firebase
             function initializeFirebase() {
@@ -320,7 +355,7 @@
                     // Update status indicator
                     firebaseStatus.innerHTML = `
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414极速快3L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                         </svg>
                         <span class="text-sm">Firebase: Connected</span>
                     `;
@@ -343,16 +378,44 @@
                 if (this.value === 'Student') {
                     studentFields.style.display = 'block';
                     // Make student fields required
+                    document.getElementById('year').required = true;
                     document.getElementById('division').required = true;
                     document.getElementById('branch').required = true;
                     document.getElementById('rollNo').required = true;
                 } else {
                     studentFields.style.display = 'none';
                     // Remove required attribute from student fields
+                    document.getElementById('year').required = false;
                     document.getElementById('division').required = false;
                     document.getElementById('branch').required = false;
                     document.getElementById('rollNo').required = false;
                 }
+            });
+
+            // Update division options based on year selection
+            yearSelect.addEventListener('change', function() {
+                const divisions = [];
+                
+                if (this.value === 'FE') {
+                    // First year has divisions A to I
+                    for (let i = 'A'.charCodeAt(0); i <= 'I'.charCodeAt(0); i++) {
+                        divisions.push(String.fromCharCode(i));
+                    }
+                } else {
+                    // Other years have divisions A to C
+                    for (let i = 'A'.charCodeAt(0); i <= 'C'.charCode极速快3(0); i++) {
+                        divisions.push(String.fromCharCode(i));
+                    }
+                }
+                
+                // Clear and repopulate division dropdown
+                divisionSelect.innerHTML = '<option value="" disabled selected>Select Division</option>';
+                divisions.forEach(div => {
+                    const option = document.createElement('option');
+                    option.value = div;
+                    option.textContent = `Division ${div}`;
+                    divisionSelect.appendChild(option);
+                });
             });
 
             // Connection Status
@@ -413,6 +476,77 @@
                 loadAdminComplaints();
             });
 
+            // Export Data
+            exportBtn.addEventListener('click', async () => {
+                try {
+                    const querySnapshot = await complaintsCollection.orderBy('timestamp', 'desc').get();
+                    const complaints = [];
+                    
+                    querySnapshot.forEach((doc) => {
+                        complaints.push({ id: doc.id, ...doc.data() });
+                    });
+                    
+                    const dataStr = JSON.stringify(complaints, null, 2);
+                    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+                    
+                    const exportFileDefaultName = 'complaints-data.json';
+                    
+                    const linkElement = document.createElement('a');
+                    linkElement.setAttribute('href', dataUri);
+                    linkElement.setAttribute('download', exportFileDefaultName);
+                    linkElement.click();
+                } catch (error) {
+                    console.error("Error exporting data:", error);
+                    alert("Failed to export data. Please try again.");
+                }
+            });
+
+            // Import Data
+            importBtn.addEventListener('click', () => {
+                importFile.click();
+            });
+
+            importFile.addEventListener('change', async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                try {
+                    importStatus.textContent = "Importing data...";
+                    importStatus.classList.remove('hidden');
+                    
+                    const fileText = await file.text();
+                    const complaints = JSON.parse(fileText);
+                    
+                    let importedCount = 0;
+                    let errorCount = 0;
+                    
+                    for (const complaint of complaints) {
+                        try {
+                            // Remove the id field as we don't want to preserve the original document ID
+                            const { id, ...complaintData } = complaint;
+                            await complaintsCollection.add(complaintData);
+                            importedCount++;
+                        } catch (error) {
+                            console.error("Error importing complaint:", error);
+                            errorCount++;
+                        }
+                    }
+                    
+                    importStatus.textContent = `Imported ${importedCount} complaints. ${errorCount} errors.`;
+                    importStatus.className = errorCount > 0 ? 'text-yellow-400 text-sm ml-4' : 'text-green-400 text-sm ml-4';
+                    
+                    // Refresh the complaints list
+                    loadAdminComplaints();
+                    
+                    // Clear the file input
+                    importFile.value = '';
+                } catch (error) {
+                    console.error("Error importing data:", error);
+                    importStatus.textContent = "Failed to import data. Please check the file format.";
+                    importStatus.className = 'text-red-400 text-sm ml-4';
+                }
+            });
+
             // Load Complaints for Admin
             function loadAdminComplaints() {
                 if (!complaintsCollection) {
@@ -461,7 +595,8 @@
                                 <input type="text" value="${c.mobile || ''}" class="admin-editable admin-mobile w-full p-1 rounded-md text-white bg-transparent border-gray-600">
                                 
                                 ${c.occupation === 'Student' ? `
-                                <p class="text-sm text-gray-400 mt-2">Division: ${c.division || 'N/A'}</p>
+                                <p class="text-sm text-gray-400 mt-2">Year: ${c.year || 'N/A'}</p>
+                                <p class="text-sm text-gray-400">Division: ${c.division || 'N/A'}</p>
                                 <p class="text-sm text-gray-400">Branch: ${c.branch || 'N/A'}</p>
                                 <p class="text-sm text-gray-400">Roll No: ${c.rollNo || 'N/A'}</p>
                                 ` : ''}
@@ -471,7 +606,7 @@
                             <span class="text-xs text-gray-400">${c.timestamp ? new Date(c.timestamp.seconds * 1000).toLocaleString() : 'N/A'}</span>
                         </div>
                         <div class="mt-2">
-                            <p class="font-semibold text-yellow-400">${c.complaintType}</p>
+                            <p class="font-semib极速快3old text-yellow-400">${c.complaintType}</p>
                             <textarea class="admin-editable admin-complaint-text w-full p-1 rounded-md text-gray-300 mt-1 bg-transparent border-gray-600" rows="3">${c.complaintText}</textarea>
                         </div>
                         <div class="mt-4 flex items-center gap-4">
@@ -555,6 +690,7 @@
 
                 // Add student-specific data if occupation is Student
                 if (complaintData.occupation === 'Student') {
+                    complaintData.year = document.getElementById('year').value;
                     complaintData.division = document.getElementById('division').value;
                     complaintData.branch = document.getElementById('branch').value;
                     complaintData.rollNo = document.getElementById('rollNo').value.trim();
@@ -589,9 +725,9 @@
 
             trackForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                const trackButton = e.target.querySelector('button[type="submit"]');
+                const trackButton = e.target.querySelector('button[type极速快3="submit"]');
                 const tokenToTrack = tokenInput.value.trim();
-                if (!tokenToTrack) return;
+                if (!tokenToTrack极速快3) return;
 
                 trackButton.disabled = true;
                 trackingResult.innerHTML = `<p class="text-yellow-300">Searching...</p>`;
@@ -609,6 +745,7 @@
                         let studentInfo = '';
                         if (complaint.occupation === 'Student') {
                             studentInfo = `
+                                <p class="text-sm text-gray-400">Year: ${complaint.year || 'N/A'}</p>
                                 <p class="text-sm text-gray-400">Division: ${complaint.division || 'N/A'}</p>
                                 <p class="text-sm text-gray-400">Branch: ${complaint.branch || 'N/A'}</p>
                                 <p class="text-sm text-gray-400">Roll No: ${complaint.rollNo || 'N/A'}</p>
