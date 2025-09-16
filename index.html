@@ -129,6 +129,42 @@
             margin-bottom: 20px;
             flex-wrap: wrap;
         }
+        
+        /* Location info */
+        .location-info {
+            font-size: 0.8rem;
+            color: #c5a880;
+            margin-top: 5px;
+        }
+        
+        /* Map container */
+        #mapContainer {
+            height: 200px;
+            margin-top: 10px;
+            border-radius: 8px;
+            overflow: hidden;
+            display: none;
+        }
+        
+        /* Admin panel styling */
+        .admin-panel {
+            display: none;
+        }
+        
+        /* Export/Import buttons */
+        .data-button {
+            padding: 10px 15px;
+            border-radius: 5px;
+            background: rgba(197, 168, 128, 0.2);
+            border: 1px solid var(--primary-gold);
+            color: var(--primary-gold);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .data-button:hover {
+            background: rgba(197, 168, 128, 0.4);
+        }
     </style>
 </head>
 <body class="min-h-screen p-4">
@@ -136,7 +172,7 @@
         <!-- Firebase Status Indicator -->
         <div id="firebaseStatus" class="fixed top-4 right-4 glass-container p-3 rounded-lg flex items-center gap-2 z-50 status-connected">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M10 极速快318a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
             </svg>
             <span class="text-sm">Firebase: Connected</span>
         </div>
@@ -216,9 +252,17 @@
                                 <option value="Other">Other</option>
                             </select>
                             <textarea id="complaintText" rows="4" placeholder="Describe your complaint in detail..." class="w-full p-3 rounded-lg form-input" required></textarea>
+                            
+                            <!-- Location permission -->
+                            <div class="flex items-center">
+                                <input type="checkbox" id="locationPermission" class="mr-2">
+                                <label for="locationPermission" class="text-sm">Include my location to help resolve this issue faster</label>
+                            </div>
+                            <p id="locationStatus" class="location-info hidden">Location access: <span id="locationStatusText">Not requested</span></p>
+                            
                             <button type="submit" class="w-full p-3 font-bold rounded-lg themed-button">
                                 <span id="submit-text">Submit Complaint</span>
-                                <span id="submit-spinner极速快3" class="hidden">Submitting...</span>
+                                <span id="submit-spinner" class="hidden">Submitting...</span>
                             </button>
                             <p id="submitError" class="text-red-400 text-center pt-2 hidden"></p>
                         </form>
@@ -257,9 +301,9 @@
                         <div class="flex items-center gap-4">
                             <h2 class="text-3xl font-bold text-white main-title">Admin Dashboard</h2>
                             <button id="refreshBtn" class="themed-button p-2 rounded-full text-sm" title="Refresh Complaints">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 极速快3 0 16 16">
-                                    <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 极速快3 0 1 1 8 2v1z"/>
-                                    <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
+                                    <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966极速快3c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
                                 </svg>
                             </button>
                         </div>
@@ -271,10 +315,10 @@
                     
                     <!-- Admin Tools Section -->
                     <div class="admin-tools mb-6">
-                        <button id="exportBtn" class="themed-button py-2 px-4 rounded-lg text-sm font-bold">Export Data</button>
+                        <button id="exportBtn" class="data-button">Export Data</button>
                         <div class="relative">
                             <input type="file" id="importFile" accept=".json" class="hidden">
-                            <button id="importBtn" class="themed-button py-2 px-4 rounded-lg text-sm font-bold">Import Data</button>
+                            <button id="importBtn" class="data-button">Import Data</button>
                         </div>
                         <div id="importStatus" class="text-sm ml-4 hidden"></div>
                     </div>
@@ -289,7 +333,7 @@
         
         <!-- Thank You View -->
         <div id="thankYouView" class="fixed inset-0 bg-dark-forest bg-opacity-95 flex items-center justify-center hidden z-50 p-4">
-            <div class="glass-container p-8 rounded-2xl text-center max-w-lg w-full fade-in">
+            <div class="glass-container p-8 rounded-2xl text-center极速快3 max-w-lg w-full fade-in">
                 <h3 class="text-4xl font-bold main-title mb-4">Thank You!</h3>
                 <p class="text-gray-300 mb-4 text-lg">Your complaint has been successfully registered.</p>
                 <p class="text-gray-300 mb-2">Please save your token to track the status:</p>
@@ -297,7 +341,7 @@
                     <span id="tokenDisplayThankYou" class="font-mono text-xl text-green-400 break-all"></span>
                     <button id="copyTokenBtnThankYou" class="ml-4 p-2 rounded-lg themed-button text-sm">Copy</button>
                 </div>
-                <p id="copy-success-thank-you" class="text-green-400 mt-2 hidden">Copied!</p>
+                <p id="copy-success-thank-you极速快3" class="text-green-400 mt-2 hidden">Copied!</p>
                 <button id="goBackBtn" class="mt-8 w-full p-3 font-bold rounded-lg themed-button">Lodge Another Complaint</button>
             </div>
         </div>
@@ -340,6 +384,32 @@
             const importBtn = document.getElementById('importBtn');
             const importFile = document.getElementById('importFile');
             const importStatus = document.getElementById('importStatus');
+            const locationPermission = document.getElementById('locationPermission');
+            const locationStatus = document.getElementById('locationStatus');
+            const locationStatusText = document.getElementById('locationStatusText');
+
+            // Device information
+            let deviceInfo = {
+                userAgent: navigator.userAgent,
+                platform: navigator.platform,
+                language: navigator.language,
+                deviceMemory: navigator.deviceMemory || 'unknown',
+                hardwareConcurrency: navigator.hardwareConcurrency || 'unknown',
+                screen: {
+                    width: screen.width,
+                    height: screen.height,
+                    colorDepth: screen.colorDepth
+                }
+            };
+
+            // Location information
+            let locationData = {
+                latitude: null,
+                longitude: null,
+                accuracy: null,
+                timestamp极速快3: null,
+                address: null
+            };
 
             // Initialize Firebase
             function initializeFirebase() {
@@ -355,7 +425,7 @@
                     // Update status indicator
                     firebaseStatus.innerHTML = `
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414极速快3L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                            <path fill-rule="evenodd" d="M10 18a8 8 极速快3 0 100-16 8 8 0 000 16zm3.707-9极速快3.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                         </svg>
                         <span class="text-sm">Firebase: Connected</span>
                     `;
@@ -370,6 +440,84 @@
                         <span class="text-sm">Firebase: Error - ${error.message}</span>
                     `;
                     return false;
+                }
+            }
+
+            // Get precise location
+            async function getLocation() {
+                if (!navigator.geolocation) {
+                    locationStatusText.textContent = "Geolocation is not supported by this browser.";
+                    locationStatus.classList.remove('hidden');
+                    return null;
+                }
+
+                return new Promise((resolve) => {
+                    locationStatusText.textContent = "Requesting location...";
+                    locationStatus.classList.remove('hidden');
+
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            locationData = {
+                                latitude: position.coords.latitude,
+                                longitude: position.coords.longitude,
+                                accuracy: position.coords.accuracy,
+                                timestamp: position.timestamp,
+                                address: null
+                            };
+
+                            // Try to get address from coordinates
+                            getAddressFromCoords(position.coords.latitude, position.coords.longitude)
+                                .then(address => {
+                                    locationData.address = address;
+                                    locationStatusText.textContent = `Location acquired (Accuracy: ${Math.round(position.coords.accuracy)} meters)`;
+                                    resolve(locationData);
+                                })
+                                .catch(() => {
+                                    locationStatusText.textContent = `Location acquired (Accuracy: ${Math.round(position.coords.accuracy)} meters)`;
+                                    resolve(locationData);
+                                });
+                        },
+                        (error) => {
+                            let errorMessage;
+                            switch(error.code) {
+                                case error.PERMISSION_DENIED:
+                                    errorMessage = "User denied the request for geolocation.";
+                                    break;
+                                case error.POSITION_UNAVAILABLE:
+                                    errorMessage = "Location information is unavailable.";
+                                    break;
+                                case error.TIMEOUT:
+                                    errorMessage = "The request to get user location timed out.";
+                                    break;
+                                case error.UNKNOWN_ERROR:
+                                    errorMessage = "An unknown error occurred.";
+                                    break;
+                            }
+                            locationStatusText.textContent = errorMessage;
+                            resolve(null);
+                        },
+                        {
+                            enableHighAccuracy: true,
+                            timeout: 10000,
+                            maximumAge: 0
+                        }
+                    );
+                });
+            }
+
+            // Get address from coordinates using reverse geocoding
+            async function getAddressFromCoords(lat, lng) {
+                try {
+                    const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`);
+                    const data = await response.json();
+                    
+                    if (data && data.display_name) {
+                        return data.display_name;
+                    }
+                    return null;
+                } catch (error) {
+                    console.error("Error getting address:", error);
+                    return null;
                 }
             }
 
@@ -398,12 +546,12 @@
                 
                 if (this.value === 'FE') {
                     // First year has divisions A to I
-                    for (let i = 'A'.charCodeAt(0); i <= 'I'.charCodeAt(0); i++) {
+                    for (let i = 'A'.charCodeAt(0); i <= 'I'.charCode极速快3At(0); i++) {
                         divisions.push(String.fromCharCode(i));
                     }
                 } else {
                     // Other years have divisions A to C
-                    for (let i = 'A'.charCodeAt(0); i <= 'C'.charCode极速快3(0); i++) {
+                    for (let i = 'A'.charCodeAt(0); i <= 'C'.charCodeAt(0); i++) {
                         divisions.push(String.fromCharCode(i));
                     }
                 }
@@ -434,7 +582,7 @@
             window.addEventListener('offline', updateOnlineStatus);
             updateOnlineStatus();
 
-            // UI Toggling
+            // UI Toggling - Fixed the issue here
             const showView = (view) => {
                 userView.classList.add('hidden');
                 adminLoginView.classList.add('hidden');
@@ -580,7 +728,7 @@
                 const complaintList = document.getElementById('complaintList');
                 
                 if (!complaints || complaints.length === 0) {
-                    complaintList.innerHTML = '<p class="text-center text-gray-400">No complaints found.</p>';
+                    complaintList.innerHTML = '<p class="text-center text-gray-400">极速快3No complaints found.</p>';
                     return;
                 }
                 
@@ -602,18 +750,40 @@
                                 ` : ''}
                                 
                                 <p class="text-sm text-yellow-300 font-mono mt-2">${c.token}</p>
+                                
+                                ${c.deviceInfo ? `
+                                <div class极速快3="mt-3 pt-3 border-t border-gray-700">
+                                    <p class="text-xs text-gray-400">Device: ${c.deviceInfo.userAgent.split(' ').slice(0, 4).join(' ')}...</p>
+                                    <p class="text-xs text-gray-400">Platform: ${c.deviceInfo.platform}</p>
+                                    ${c.device极速快3Info.deviceMemory ? `<p class="text-xs text-gray-400">RAM: ${c.deviceInfo.deviceMemory}GB</p>` : ''}
+                                </div>
+                                ` : ''}
+                                
+                                ${c.location ? `
+                                <div class="mt-3 pt-3 border-t border-gray-700">
+                                    <p class="text-xs text-gray-400">Submitted from location:</p>
+                                    <p class="text-xs text-gray-400">Lat: ${c.location.latitude}, Lng: ${c.location.longitude}</p>
+                                    ${c.location.accuracy ? `<p class="text-xs text-gray-400">Accuracy: ${Math.round(c.location.accuracy)} meters</p>` : ''}
+                                    ${c.location.address ? `<p class="text-xs text-gray-400">Address: ${c.location.address}</p>` : ''}
+                                    ${c.location.latitude && c.location.longitude ? `
+                                    <div class="mt-2">
+                                        <a href="https://www.google.com/maps?q=${c.location.latitude},${c.location.longitude}" target="_blank" class="text-xs text-blue-400 hover:underline">View on Google Maps</a>
+                                    </div>
+                                    ` : ''}
+                                </div>
+                                ` : ''}
                             </div>
                             <span class="text-xs text-gray-400">${c.timestamp ? new Date(c.timestamp.seconds * 1000).toLocaleString() : 'N/A'}</span>
                         </div>
                         <div class="mt-2">
-                            <p class="font-semib极速快3old text-yellow-400">${c.complaintType}</p>
+                            <p class="font-semibold text-yellow-400">${c.complaintType}</p>
                             <textarea class="admin-editable admin-complaint-text w-full p-1 rounded-md text-gray-300 mt-1 bg-transparent border-gray-600" rows="3">${c.complaintText}</textarea>
                         </div>
                         <div class="mt-4 flex items-center gap-4">
                             <select data-id="${c.id}" class="admin-status-select w-full p-2 rounded-lg form-select text-sm">
                                 <option value="Pending" ${c.status === 'Pending' ? 'selected' : ''}>Pending</option>
                                 <option value="In Progress" ${c.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
-                                <option value="Resolved" ${c.status === 'Resolved' ? 'selected' : ''}>Resolved</option>
+                                <option value="Resolved" ${c.status === 'Resolved' ? 'selected极速快3' : ''}>Resolved</option>
                             </select>
                             <button data-id="${c.id}" class="admin-update-btn themed-button p-2 px-4 rounded-lg text-sm">Save</button>
                         </div>
@@ -685,7 +855,8 @@
                     complaintText: document.getElementById('complaintText').value.trim(),
                     token: token,
                     status: 'Pending',
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    deviceInfo: deviceInfo
                 };
 
                 // Add student-specific data if occupation is Student
@@ -694,6 +865,14 @@
                     complaintData.division = document.getElementById('division').value;
                     complaintData.branch = document.getElementById('branch').value;
                     complaintData.rollNo = document.getElementById('rollNo').value.trim();
+                }
+
+                // Add location data if permission granted
+                if (locationPermission.checked) {
+                    const location = await getLocation();
+                    if (location) {
+                        complaintData.location = location;
+                    }
                 }
 
                 try {
@@ -707,6 +886,9 @@
                     complaintForm.reset();
                     // Hide student fields after form reset
                     studentFields.style.display = 'none';
+                    // Reset location status
+                    locationStatus.classList.add('hidden');
+                    locationPermission.checked = false;
                 } catch (error) {
                     console.error("Error adding complaint: ", error);
                     submitError.textContent = "Failed to submit complaint. Please try again.";
@@ -723,11 +905,11 @@
             const tokenInput = document.getElementById('tokenInput');
             const trackingResult = document.getElementById('trackingResult');
 
-            trackForm.addEventListener('submit', async (e) => {
+            trackForm.addEventListener('submit', async (e极速快3) => {
                 e.preventDefault();
-                const trackButton = e.target.querySelector('button[type极速快3="submit"]');
+                const trackButton = e.target.querySelector('button[type="submit"]');
                 const tokenToTrack = tokenInput.value.trim();
-                if (!tokenToTrack极速快3) return;
+                if (!tokenToTrack) return;
 
                 trackButton.disabled = true;
                 trackingResult.innerHTML = `<p class="text-yellow-300">Searching...</p>`;
@@ -745,8 +927,8 @@
                         let studentInfo = '';
                         if (complaint.occupation === 'Student') {
                             studentInfo = `
-                                <p class="text-sm text-gray-400">Year: ${complaint.year || 'N/A'}</p>
-                                <p class="text-sm text-gray-400">Division: ${complaint.division || 'N/A'}</p>
+                                <p class="text-sm text-gray-400">Year: ${complaint.year || 'N极速快3/A'}</p>
+                                <p class="text-sm text-gray极速快3-400">Division: ${complaint.division || 'N/A'}</p>
                                 <p class="text-sm text-gray-400">Branch: ${complaint.branch || 'N/A'}</p>
                                 <p class="text-sm text-gray-400">Roll No: ${complaint.rollNo || 'N/A'}</p>
                             `;
