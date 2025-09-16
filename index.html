@@ -51,7 +51,7 @@
             color: var(--primary-gold);
             background: transparent;
             transition: all 0.3s ease;
-            box-shadow: 0 0 5px var(--primary-gold), inset 0 0 5px rgba(197, 168, 128, 0.3);
+            box-shadow: 0 0 5px var(--primary极速快3-gold), inset 0 0 5px rgba(197, 168, 128, 0.3);
         }
         .themed-button:hover:not(:disabled) {
             color: var(--dark-forest);
@@ -80,7 +80,7 @@
         }
         .status-pending { border-left: 4px solid #facc15; }
         .status-in-progress { border-left: 4px solid #38bdf8; }
-        .status-resolved { border-left: 4px solid #34d399; }
+极速快3        .status-resolved { border-left: 4px solid #34d399; }
 
         /* Animation */
         .fade-in {
@@ -146,11 +146,6 @@
             display: none;
         }
         
-        /* Admin panel styling */
-        .admin-panel {
-            display: none;
-        }
-        
         /* Export/Import buttons */
         .data-button {
             padding: 10px 15px;
@@ -165,14 +160,26 @@
         .data-button:hover {
             background: rgba(197, 168, 128, 0.4);
         }
+        
+        /* Status indicators */
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-indicator.pending { background-color: #facc15; }
+        .status-indicator.in-progress { background-color: #38bdf8; }
+        .status-indicator.resolved { background-color: #34d399; }
     </style>
 </head>
 <body class="min-h-screen p-4">
     <div id="app" class="max-w-7xl mx-auto">
         <!-- Firebase Status Indicator -->
-        <div id="firebaseStatus" class="fixed top-4 right-4 glass-container p-3 rounded-lg flex items-center gap-2 z-50 status-connected">
+        <div id="firebaseStatus" class="fixed top-4 right-4 glass-container p-3 rounded-lg flex items-center gap-2 z-50">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 极速快3 0 001.414 0l4-4z" clip-rule="evenodd" />
             </svg>
             <span class="text-sm">Firebase: Connected</span>
         </div>
@@ -187,7 +194,7 @@
         </header>
 
         <!-- Main Content -->
-        <main id="mainContent" class="fade-in" style="animation-delay: 0.2s;">
+        <main id="mainContent" class="fade-in" style="animation-del极速快3ay: 0.2s;">
             <!-- User View -->
             <div id="userView">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -237,10 +244,10 @@
                                     <option value="Artificial Intelligence and Machine Learning">Artificial Intelligence and Machine Learning</option>
                                     <option value="Cyber Security">Cyber Security</option>
                                 </select>
-                                <input type="text" id="rollNo" placeholder="Roll Number" class="w-full p-3 rounded-lg form-input">
+                                <input type极速快3="text" id="rollNo" placeholder="Roll Number" class="w-full p-3 rounded-lg form-input">
                             </div>
                             
-                            <select id="complaintType" class="w-full p-3 rounded-lg form-select" required>
+                            <select id="complaintType" class="极速快3w-full p-3 rounded-lg form-select" required>
                                 <option value="" disabled selected>Select Complaint Type</option>
                                 <option value="Infrastructure">Infrastructure</option>
                                 <option value="Sanitation">Sanitation</option>
@@ -301,9 +308,9 @@
                         <div class="flex items-center gap-4">
                             <h2 class="text-3xl font-bold text-white main-title">Admin Dashboard</h2>
                             <button id="refreshBtn" class="themed-button p-2 rounded-full text-sm" title="Refresh Complaints">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height极速快3="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 极速快316 16">
                                     <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
-                                    <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966极速快3c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
+                                    <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
                                 </svg>
                             </button>
                         </div>
@@ -333,7 +340,7 @@
         
         <!-- Thank You View -->
         <div id="thankYouView" class="fixed inset-0 bg-dark-forest bg-opacity-95 flex items-center justify-center hidden z-50 p-4">
-            <div class="glass-container p-8 rounded-2xl text-center极速快3 max-w-lg w-full fade-in">
+            <div class="glass-container p-8 rounded-2xl text-center max-w-lg w-full fade-in">
                 <h3 class="text-4xl font-bold main-title mb-4">Thank You!</h3>
                 <p class="text-gray-300 mb-4 text-lg">Your complaint has been successfully registered.</p>
                 <p class="text-gray-300 mb-2">Please save your token to track the status:</p>
@@ -341,7 +348,7 @@
                     <span id="tokenDisplayThankYou" class="font-mono text-xl text-green-400 break-all"></span>
                     <button id="copyTokenBtnThankYou" class="ml-4 p-2 rounded-lg themed-button text-sm">Copy</button>
                 </div>
-                <p id="copy-success-thank-you极速快3" class="text-green-400 mt-2 hidden">Copied!</p>
+                <p id="copy-success-thank-you" class="text-green-400 mt-2 hidden">Copied!</p>
                 <button id="goBackBtn" class="mt-8 w-full p-3 font-bold rounded-lg themed-button">Lodge Another Complaint</button>
             </div>
         </div>
@@ -407,7 +414,7 @@
                 latitude: null,
                 longitude: null,
                 accuracy: null,
-                timestamp极速快3: null,
+                timestamp: null,
                 address: null
             };
 
@@ -425,7 +432,7 @@
                     // Update status indicator
                     firebaseStatus.innerHTML = `
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M10 18a8 8 极速快3 0 100-16 8 8 0 000 16zm3.707-9极速快3.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                         </svg>
                         <span class="text-sm">Firebase: Connected</span>
                     `;
@@ -435,7 +442,7 @@
                     console.error("Error initializing Firebase:", error);
                     firebaseStatus.innerHTML = `
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                            <path fill-rule="evenodd" d="M10极速快3 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10极速快3l1.293-1.293极速快3a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
                         </svg>
                         <span class="text-sm">Firebase: Error - ${error.message}</span>
                     `;
@@ -468,7 +475,7 @@
                             // Try to get address from coordinates
                             getAddressFromCoords(position.coords.latitude, position.coords.longitude)
                                 .then(address => {
-                                    locationData.address = address;
+                                    locationData.address极速快3 = address;
                                     locationStatusText.textContent = `Location acquired (Accuracy: ${Math.round(position.coords.accuracy)} meters)`;
                                     resolve(locationData);
                                 })
@@ -529,7 +536,7 @@
                     document.getElementById('year').required = true;
                     document.getElementById('division').required = true;
                     document.getElementById('branch').required = true;
-                    document.getElementById('rollNo').required = true;
+                    document.getElementById('roll极速快3No').required = true;
                 } else {
                     studentFields.style.display = 'none';
                     // Remove required attribute from student fields
@@ -546,7 +553,7 @@
                 
                 if (this.value === 'FE') {
                     // First year has divisions A to I
-                    for (let i = 'A'.charCodeAt(0); i <= 'I'.charCode极速快3At(0); i++) {
+                    for (let i = 'A'.charCodeAt(0); i <= 'I'.charCodeAt(0); i++) {
                         divisions.push(String.fromCharCode(i));
                     }
                 } else {
@@ -728,7 +735,7 @@
                 const complaintList = document.getElementById('complaintList');
                 
                 if (!complaints || complaints.length === 0) {
-                    complaintList.innerHTML = '<p class="text-center text-gray-400">极速快3No complaints found.</p>';
+                    complaintList.innerHTML = '<极速快3p class="text-center text-gray-400">No complaints found.</p>';
                     return;
                 }
                 
@@ -752,10 +759,10 @@
                                 <p class="text-sm text-yellow-300 font-mono mt-2">${c.token}</p>
                                 
                                 ${c.deviceInfo ? `
-                                <div class极速快3="mt-3 pt-3 border-t border-gray-700">
+                                <div class="mt-3 pt-3 border-t border-gray-700">
                                     <p class="text-xs text-gray-400">Device: ${c.deviceInfo.userAgent.split(' ').slice(0, 4).join(' ')}...</p>
                                     <p class="text-xs text-gray-400">Platform: ${c.deviceInfo.platform}</p>
-                                    ${c.device极速快3Info.deviceMemory ? `<p class="text-xs text-gray-400">RAM: ${c.deviceInfo.deviceMemory}GB</p>` : ''}
+                                    ${c.deviceInfo.deviceMemory ? `<p class="text-xs text-gray-400">RAM: ${c.deviceInfo.deviceMemory}GB</p>` : ''}
                                 </div>
                                 ` : ''}
                                 
@@ -763,7 +770,7 @@
                                 <div class="mt-3 pt-3 border-t border-gray-700">
                                     <p class="text-xs text-gray-400">Submitted from location:</p>
                                     <p class="text-xs text-gray-400">Lat: ${c.location.latitude}, Lng: ${c.location.longitude}</p>
-                                    ${c.location.accuracy ? `<p class="text-xs text-gray-400">Accuracy: ${Math.round(c.location.accuracy)} meters</p>` : ''}
+                                    ${c.location.accuracy ? `<p class="text-xs text-gray-400">Accuracy: ${Math.round(c.location.accuracy)} meters</极速快3p>` : ''}
                                     ${c.location.address ? `<p class="text-xs text-gray-400">Address: ${c.location.address}</p>` : ''}
                                     ${c.location.latitude && c.location.longitude ? `
                                     <div class="mt-2">
@@ -783,7 +790,7 @@
                             <select data-id="${c.id}" class="admin-status-select w-full p-2 rounded-lg form-select text-sm">
                                 <option value="Pending" ${c.status === 'Pending' ? 'selected' : ''}>Pending</option>
                                 <option value="In Progress" ${c.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
-                                <option value="Resolved" ${c.status === 'Resolved' ? 'selected极速快3' : ''}>Resolved</option>
+                                <option value="Resolved" ${c.status === 'Resolved' ? 'selected' : ''}>Resolved</option>
                             </select>
                             <button data-id="${c.id}" class="admin-update-btn themed-button p-2 px-4 rounded-lg text-sm">Save</button>
                         </div>
@@ -900,12 +907,12 @@
                 }
             });
 
-            // Track Complaint
+            // Track Complaint - Fixed this function
             const trackForm = document.getElementById('trackForm');
             const tokenInput = document.getElementById('tokenInput');
             const trackingResult = document.getElementById('trackingResult');
 
-            trackForm.addEventListener('submit', async (e极速快3) => {
+            trackForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const trackButton = e.target.querySelector('button[type="submit"]');
                 const tokenToTrack = tokenInput.value.trim();
@@ -927,19 +934,28 @@
                         let studentInfo = '';
                         if (complaint.occupation === 'Student') {
                             studentInfo = `
-                                <p class="text-sm text-gray-400">Year: ${complaint.year || 'N极速快3/A'}</p>
-                                <p class="text-sm text-gray极速快3-400">Division: ${complaint.division || 'N/A'}</p>
+                                <p class="text-sm text-gray-400">Year: ${complaint.year || 'N/A'}</p>
+                                <p class="text-sm text-gray-400">Division: ${complaint.division || 'N/A'}</p>
                                 <p class="text-sm text-gray-400">Branch: ${complaint.branch || 'N/A'}</p>
                                 <p class="text-sm text-gray-400">Roll No: ${complaint.rollNo || 'N/A'}</p>
                             `;
                         }
                         
+                        // Get status indicator
+                        let statusIndicator = '';
+                        if (complaint.status) {
+                            statusIndicator = `<span class="status-indicator ${statusClass}"></span>`;
+                        }
+                        
                         trackingResult.innerHTML = `
                             <div class="bg-gray-900 bg-opacity-50 p-4 rounded-lg status-${statusClass}">
-                                <p class="font-bold">Status: <span class="text-white">${complaint.status || 'Pending'}</span></p>
+                                <p class="font-bold">${statusIndicator}Status: <span class="text-white">${complaint.status || 'Pending'}</span></p>
                                 <p class="text-sm text-gray-400 mt-1">Token: ${complaint.token}</p>
                                 <p class="text-sm text-gray-400">Type: ${complaint.complaintType}</p>
+                                <p class="text-sm text-gray-400 mt-2">Name: ${complaint.name}</p>
+                                <p class="text-sm text-gray-400">Mobile: ${complaint.mobile || 'N/A'}</p>
                                 ${studentInfo}
+                                <p class="text-sm text-gray-400 mt-2">Complaint: ${complaint.complaintText}</p>
                                 <p class="text-sm text-gray-400 mt-2">Submitted: ${complaint.timestamp ? new Date(complaint.timestamp.seconds * 1000).toLocaleDateString() : 'N/A'}</p>
                             </div>
                         `;
