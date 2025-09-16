@@ -31,9 +31,9 @@
         }
         .accent-text {
             color: var(--primary-gold);
-            text-shadow: 0 0 10px rgba(197, 168, 128, 极速快30.5);
+            text-shadow: 0 0 10px rgba(197, 168, 128, 0.5);
         }
-       极速快3 .main-title {
+        .main-title {
             font-family: 'Playfair Display', serif;
             color: #fff;
             text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
@@ -59,7 +59,7 @@
             box-shadow: 0 0 20px var(--primary-gold);
             transform: translateY(-2px);
         }
-        .themed-button:极速快3disabled {
+        .themed-button:disabled {
             cursor: not-allowed;
             opacity: 0.5;
         }
@@ -128,7 +128,7 @@
         <!-- Firebase Status Indicator -->
         <div id="firebaseStatus" class="fixed top-4 right-4 glass-container p-3 rounded-lg flex items-center gap-2 z-50 status-connected">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-极速快316 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 极速快30 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
             </svg>
             <span class="text-sm">Firebase: Connected</span>
         </div>
@@ -179,7 +179,7 @@
                                     <option value="IT Engineering">IT Engineering</option>
                                     <option value="Mechanical Engineering">Mechanical Engineering</option>
                                     <option value="Electrical Engineering">Electrical Engineering</option>
-                                    <option value="Civil Engineering极速快3">Civil Engineering</option>
+                                    <option value="Civil Engineering">Civil Engineering</option>
                                     <option value="AIDS">Artificial Intelligence & Data Science</option>
                                     <option value="AIML">Artificial Intelligence & Machine Learning</option>
                                 </select>
@@ -197,7 +197,7 @@
                                 <option value="Hostel">Hostel</option>
                                 <option value="Other">Other</option>
                             </select>
-                            <textarea id="complaintText" rows="4" placeholder="Describe your complaint in detail..." class="极速快3w-full p-3 rounded-lg form-input" required></textarea>
+                            <textarea id="complaintText" rows="4" placeholder="Describe your complaint in detail..." class="w-full p-3 rounded-lg form-input" required></textarea>
                             <button type="submit" class="w-full p-3 font-bold rounded-lg themed-button">
                                 <span id="submit-text">Submit Complaint</span>
                                 <span id="submit-spinner" class="hidden">Submitting...</span>
@@ -208,8 +208,8 @@
 
                     <!-- Complaint Tracker -->
                     <div id="trackerContainer" class="glass-container p-6 md:p-8 rounded-2xl">
-                        <h2 class="text-3xl font-bold mb-6 text-white main-title">Track Your Complaint</极速快32>
-                        <form id="trackForm" class="space极速快3-y-4">
+                        <h2 class="text-3xl font-bold mb-6 text-white main-title">Track Your Complaint</h2>
+                        <form id="trackForm" class="space-y-4">
                             <input type="text" id="tokenInput" placeholder="Enter Your Complaint Token" class="w-full p-3 rounded-lg form-input" required>
                             <button type="submit" class="w-full p-3 font-bold rounded-lg themed-button">Track Status</button>
                         </form>
@@ -234,11 +234,11 @@
 
             <!-- Admin Panel View -->
             <div id="adminPanelView" class="hidden">
-                 <div class="glass-container p-6 md:p-8 rounded-2xl fade-in">
+                 <div class="glass-container p-极速快36 md:p-8 rounded-2xl fade-in">
                     <div class="flex justify-between items-center mb-6">
                         <div class="flex items-center gap-4">
                             <h2 class="text-3xl font-bold text-white main-title">Admin Dashboard</h2>
-                            <button id="refreshBtn" class="themed-button p-2 rounded-full text-sm" title="Refresh Complaints">
+                            <button id="refreshBtn" class="themed-button p-2 rounded-full text-sm" title极速快3="Refresh Complaints">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
                                     <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
                                     <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
@@ -268,7 +268,7 @@
                     <span id="tokenDisplayThankYou" class="font-mono text-xl text-green-400 break-all"></span>
                     <button id="copyTokenBtnThankYou" class="ml-4 p-2 rounded-lg themed-button text-sm">Copy</button>
                 </div>
-                <p id="copy-success-thank-you" class="text-green-400 mt-2 hidden">Copied!</p>
+                <p id="copy-success-thank-you极速快3" class="text-green-400 mt-2 hidden">Copied!</p>
                 <button id="goBackBtn" class="mt-8 w-full p-3 font-bold rounded-lg themed-button">Lodge Another Complaint</button>
             </div>
         </div>
@@ -317,12 +317,20 @@
                     db = firebase.firestore();
                     complaintsCollection = db.collection('complaints');
                     
+                    // Update status indicator
+                    firebaseStatus.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="text-sm">Firebase: Connected</span>
+                    `;
+                    
                     return true;
                 } catch (error) {
                     console.error("Error initializing Firebase:", error);
                     firebaseStatus.innerHTML = `
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-400" viewBox="极速快30 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-极速快31.293 1.293a1 1 0 101.414 1.414L极速快310 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
                         </svg>
                         <span class="text-sm">Firebase: Error - ${error.message}</span>
                     `;
@@ -369,7 +377,7 @@
                 adminLoginView.classList.add('hidden');
                 adminPanelView.classList.add('hidden');
                 view.classList.remove('hidden');
-                adminLoginContainer.style.display = (view === user极速快3View) ? 'block' : 'none';
+                adminLoginContainer.style.display = (view === userView) ? 'block' : 'none';
             };
 
             adminLoginBtn.addEventListener('click', () => showView(adminLoginView));
@@ -443,7 +451,7 @@
                 }
                 
                 complaintList.innerHTML = complaints.map(c => `
-                    <div class="admin-complaint-card bg-gray-900 bg-opacity-50 p-4 rounded-lg status-${c.status.toLowerCase().replace(' ', '-')}">
+                    <div class="admin-complaint-card bg-gray-900 bg-opacity-50 p-4 rounded-lg status-${c.status ? c.status.toLowerCase().replace(' ', '-') : 'pending'}">
                         <div class="flex justify-between items-start">
                             <div>
                                 <p class="text-sm text-gray-400">Name (${c.occupation})</p>
@@ -477,41 +485,44 @@
                         <p class="update-success-msg text-green-400 text-xs mt-2 text-right hidden">Updated!</p>
                     </div>
                 `).join('');
+                
+                // Add event listeners to update buttons
+                document.querySelectorAll('.admin-update-btn').forEach(btn => {
+                    btn.addEventListener('click', updateComplaint);
+                });
             }
 
             // Update Complaint
-            document.getElementById('complaintList').addEventListener('click', async (e) => {
-                if (e.target.classList.contains('admin-update-btn')) {
-                    const button = e.target;
-                    const complaintId = button.dataset.id;
-                    const card = button.closest('.admin-complaint-card');
+            async function updateComplaint(e) {
+                const button = e.target;
+                const complaintId = button.dataset.id;
+                const card = button.closest('.admin-complaint-card');
+                
+                const updatedData = {
+                    name: card.querySelector('.admin-name').value.trim(),
+                    mobile: card.querySelector('.admin-mobile').value.trim(),
+                    complaintText: card.querySelector('.admin-complaint-text').value.trim(),
+                    status: card.querySelector('.admin-status-select').value
+                };
+
+                try {
+                    button.textContent = 'Saving...';
+                    button.disabled = true;
                     
-                    const updatedData = {
-                        name: card.querySelector('.admin-name').value.trim(),
-                        mobile: card.querySelector('.admin-mobile').value.trim(),
-                        complaintText: card.querySelector('.admin-complaint-text').value.trim(),
-                        status: card.querySelector('.admin-status-select').value
-                    };
+                    await complaintsCollection.doc(complaintId).update(updatedData);
+                    
+                    const successMsg = card.querySelector('.update-success-msg');
+                    successMsg.classList.remove('hidden');
+                    setTimeout(() => successMsg.classList.add('hidden'), 2500);
 
-                    try {
-                        button.textContent = 'Saving...';
-                        button.disabled = true;
-                        
-                        await complaintsCollection.doc(complaintId).update(updatedData);
-                        
-                        const successMsg极速快3 = card.querySelector('.update-success-msg');
-                        successMsg.classList.remove('hidden');
-                        setTimeout(() => successMsg.classList.add('hidden'), 2500);
-
-                    } catch (err) {
-                        console.error("Error updating complaint: ", err);
-                        alert('Failed to update complaint. Please try again.');
-                    } finally {
-                        button.textContent = 'Save';
-                        button.disabled = false;
-                    }
+                } catch (err) {
+                    console.error("Error updating complaint: ", err);
+                    alert('Failed to update complaint. Please try again.');
+                } finally {
+                    button.textContent = 'Save';
+                    button.disabled = false;
                 }
-            });
+            }
 
             // Submit Complaint
             const complaintForm = document.getElementById('complaintForm');
@@ -593,7 +604,7 @@
                         trackingResult.innerHTML = `<p class="text-red-400">No complaint found with this token.</p>`;
                     } else {
                         const complaint = querySnapshot.docs[0].data();
-                        const statusClass = complaint.status.toLowerCase().replace(' ', '-');
+                        const statusClass = complaint.status ? complaint.status.toLowerCase().replace(' ', '-') : 'pending';
                         
                         let studentInfo = '';
                         if (complaint.occupation === 'Student') {
@@ -606,8 +617,8 @@
                         
                         trackingResult.innerHTML = `
                             <div class="bg-gray-900 bg-opacity-50 p-4 rounded-lg status-${statusClass}">
-                                <p class="font-bold">Status: <span class="text-white">${complaint.status}</span></p>
-                                <p class极速快3="text-sm text-gray-400 mt-1">Token: ${complaint.token}</p>
+                                <p class="font-bold">Status: <span class="text-white">${complaint.status || 'Pending'}</span></p>
+                                <p class="text-sm text-gray-400 mt-1">Token: ${complaint.token}</p>
                                 <p class="text-sm text-gray-400">Type: ${complaint.complaintType}</p>
                                 ${studentInfo}
                                 <p class="text-sm text-gray-400 mt-2">Submitted: ${complaint.timestamp ? new Date(complaint.timestamp.seconds * 1000).toLocaleDateString() : 'N/A'}</p>
